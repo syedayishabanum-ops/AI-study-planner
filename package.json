@@ -1,0 +1,13 @@
+{
+  "name": "ai-study-planner",
+  "version": "1.0.0",
+  "description": "AI Study Planner Workspace",
+  "scripts": {
+    "install:all": "npm install && npm install --prefix client && npm install --prefix server",
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build:all": "npm run build --prefix server && npm run build --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

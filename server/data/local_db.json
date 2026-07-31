@@ -1,0 +1,81 @@
+{
+  "users": [
+    {
+      "email": "scholar.sam@gmail.com",
+      "full_name": "Sam Scholar",
+      "avatar_url": "https://api.dicebear.com/7.x/adventurer/svg?seed=Sam",
+      "settings": {
+        "darkMode": true,
+        "studyReminders": true,
+        "examReminders": true,
+        "breakReminders": true,
+        "preferredHours": 4
+      },
+      "id": "30b10422-03e4-4790-8cc0-ff45d417b674",
+      "xp": 0,
+      "streak": 1,
+      "last_active": "2026-07-28"
+    },
+    {
+      "email": "preethikaragupathi@gmail.com",
+      "password_hash": "$2a$10$Ig5Vod2hxqx7vYm3XZnkjeietvpg4SW5qMpZECmAiymhWvxv13ul6",
+      "full_name": "R.Preethika",
+      "avatar_url": "https://api.dicebear.com/7.x/adventurer/svg?seed=R.Preethika",
+      "settings": {
+        "darkMode": true,
+        "studyReminders": true,
+        "examReminders": true,
+        "breakReminders": true,
+        "preferredHours": 4
+      },
+      "id": "76ca511b-783d-4e8b-b3f4-09c93b98645d",
+      "xp": 0,
+      "streak": 1,
+      "last_active": "2026-07-28"
+    },
+    {
+      "email": "syedayishabanu.m@gmail.com",
+      "password_hash": "$2a$10$WH.L7aIrkujIIIcB.oQ3xuZC.ivyieVkcXLDXGQ3WwynPjJfO8iUK",
+      "full_name": "M.Syed Ayisha Banu",
+      "avatar_url": "https://api.dicebear.com/7.x/adventurer/svg?seed=Zen",
+      "settings": {
+        "darkMode": true,
+        "studyReminders": true,
+        "examReminders": true,
+        "breakReminders": true,
+        "preferredHours": 4
+      },
+      "id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac",
+      "xp": 0,
+      "streak": 1,
+      "last_active": "2026-07-28"
+    }
+  ],
+  "subjects": [
+    {
+      "name": "ayisha va",
+      "color": "#8b5cf6",
+      "difficulty_level": "hard",
+      "credits": 3,
+      "priority": "medium",
+      "id": "bcb26feb-1450-47be-97cf-45c8e3bd295d",
+      "user_id": "76ca511b-783d-4e8b-b3f4-09c93b98645d"
+    },
+    {
+      "name": "Tamil",
+      "color": "#8b5cf6",
+      "difficulty_level": "medium",
+      "credits": 5,
+      "priority": "medium",
+      "id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    }
+  ],
+  "units": [],
+  "exams": [],
+  "tasks": [],
+  "studyPlans": [],
+  "progress": [],
+  "achievements": [],
+  "notifications": []
+}

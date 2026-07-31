@@ -1,0 +1,152 @@
+/* Import Modern Premium Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  
+  /* Modern Curated Color Palettes */
+  --color-glass-bg-dark: rgba(15, 23, 42, 0.45);
+  --color-glass-bg-light: rgba(255, 255, 255, 0.45);
+  --color-glass-border-dark: rgba(255, 255, 255, 0.08);
+  --color-glass-border-light: rgba(15, 23, 42, 0.08);
+}
+
+:root {
+  font-family: 'Inter', sans-serif;
+  color-scheme: dark light;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background-attachment: fixed;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light / Dark background gradients */
+body.dark {
+  background: radial-gradient(circle at 0% 0%, rgba(30, 27, 75, 0.4) 0%, transparent 40%),
+              radial-gradient(circle at 100% 100%, rgba(76, 29, 149, 0.4) 0%, transparent 40%),
+              #030712;
+  color: #f3f4f6;
+}
+
+body.light {
+  background: radial-gradient(circle at 0% 0%, rgba(224, 231, 255, 0.5) 0%, transparent 45%),
+              radial-gradient(circle at 100% 100%, rgba(243, 232, 255, 0.5) 0%, transparent 45%),
+              #f9fafb;
+  color: #111827;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* Glassmorphism utility overrides */
+.glass-panel {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .glass-panel {
+  background-color: rgba(17, 24, 39, 0.7);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.light .glass-panel {
+  background-color: rgba(255, 255, 255, 0.75);
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+.glass-panel-interactive:hover {
+  transform: translateY(-2px);
+}
+
+.dark .glass-panel-interactive:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 40px 0 rgba(99, 102, 241, 0.15);
+}
+
+.light .glass-panel-interactive:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+  box-shadow: 0 12px 40px 0 rgba(99, 102, 241, 0.1);
+}
+
+/* Circular Pomodoro Progress */
+.progress-ring-circle {
+  transition: stroke-dashoffset 0.35s;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.glow-glow {
+  animation: pulseGlow 4s infinite ease-in-out;
+}
+
+/* FullCalendar styling overrides for dark/light integration */
+.fc {
+  --fc-button-bg-color: #6366f1;
+  --fc-button-border-color: #6366f1;
+  --fc-button-hover-bg-color: #4f46e5;
+  --fc-button-hover-border-color: #4f46e5;
+  --fc-button-active-bg-color: #4338ca;
+  --fc-button-active-border-color: #4338ca;
+  --fc-border-color: rgba(156, 163, 175, 0.25);
+  font-family: inherit;
+}
+.fc-theme-standard td, .fc-theme-standard th {
+  border: 1px solid rgba(156, 163, 175, 0.15) !important;
+}
+.fc .fc-toolbar-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem !important;
+}
+.dark .fc {
+  color: #f3f4f6;
+}
+.light .fc {
+  color: #1f2937;
+}
+
+/* Hide default Vite styles */
+#root {
+  width: 100%;
+}
+body {
+  display: block;
+}

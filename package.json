@@ -5,9 +5,15 @@
   "scripts": {
     "install:all": "npm install && npm install --prefix client && npm install --prefix server",
     "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
-    "build:all": "npm run build --prefix server && npm run build --prefix client"
+    "build:all": "npm run build --prefix server && npm run build --prefix client",
+    "lint": "npm run lint --prefix client",
+    "format": "prettier --write --ignore-unknown .",
+    "format:check": "prettier --check --ignore-unknown .",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
+    "prettier": "^3.9.6"
   }
 }

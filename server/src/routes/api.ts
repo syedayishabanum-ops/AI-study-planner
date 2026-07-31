@@ -607,6 +607,26 @@ router.post('/progress/badge', authenticateToken, async (req: AuthRequest, res) 
   }
 });
 
+// ==================== NOTIFICATIONS ROUTES ====================
+
+router.get('/notifications', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const notifications = await db.getNotifications(req.userId!);
+    res.json(notifications);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put('/notifications/:id', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const notification = await db.markNotificationRead(req.userId!, req.params.id);
+    res.json(notification);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // General health check
 router.get('/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });

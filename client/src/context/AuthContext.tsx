@@ -23,7 +23,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, fullName: string) => Promise<void>;
+  signup: (email: string, password: string, fullName: string) => Promise<{ confirmationRequired?: boolean; message?: string } | void>;
   googleLogin: (email: string, fullName: string, avatarUrl?: string) => Promise<void>;
   logout: () => void;
   updateProfile: (updates: Partial<User>) => Promise<void>;
@@ -32,7 +32,7 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-export const API_BASE = 'http://localhost:5000/api';
+export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -89,12 +89,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      const data = await response.json();
+      
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error('Failed to parse login response from server.');
+      }
+
       if (!response.ok) throw new Error(data.error || 'Login failed.');
 
       localStorage.setItem('token', data.token);
       setToken(data.token);
       setUser(data.user);
+    } catch (err: any) {
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        throw new Error('Unable to connect to the authentication server. Please check your network connection or verify that the backend server is running on the correct port.');
+      }
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -108,12 +120,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, fullName }),
       });
-      const data = await response.json();
+      
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error('Failed to parse signup response from server.');
+      }
+
       if (!response.ok) throw new Error(data.error || 'Signup failed.');
+
+      if (data.confirmationRequired) {
+        return { confirmationRequired: true, message: data.message };
+      }
 
       localStorage.setItem('token', data.token);
       setToken(data.token);
       setUser(data.user);
+    } catch (err: any) {
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        throw new Error('Unable to connect to the authentication server. Please check your network connection or verify that the backend server is running on the correct port.');
+      }
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -127,12 +155,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, fullName, avatarUrl }),
       });
-      const data = await response.json();
+      
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error('Failed to parse Google login response from server.');
+      }
+
       if (!response.ok) throw new Error(data.error || 'Google Login failed.');
 
       localStorage.setItem('token', data.token);
       setToken(data.token);
       setUser(data.user);
+    } catch (err: any) {
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        throw new Error('Unable to connect to the authentication server. Please check your network connection or verify that the backend server is running on the correct port.');
+      }
+      throw err;
     } finally {
       setIsLoading(false);
     }

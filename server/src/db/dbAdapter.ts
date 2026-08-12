@@ -30,6 +30,7 @@ export interface Subject {
   difficulty_level: 'easy' | 'medium' | 'hard';
   credits: number;
   priority: 'low' | 'medium' | 'high';
+  current_grade?: number; // 0-100 percentage classroom grade
 }
 
 export interface Unit {
@@ -46,6 +47,7 @@ export interface Exam {
   name: string;
   exam_date: string;
   weightage: number; // percentage, e.g. 20
+  score?: number; // score/grade achieved, 0-100
 }
 
 export interface Task {
@@ -59,6 +61,7 @@ export interface Task {
   priority: 'low' | 'medium' | 'high';
   duration_minutes: number;
   recurring: boolean;
+  actual_duration_minutes?: number; // tracked duration spent
 }
 
 export interface StudyPlan {
@@ -155,6 +158,14 @@ class DatabaseAdapter {
     }
   }
 
+  getSupabaseClient(): SupabaseClient | null {
+    return this.supabase;
+  }
+
+  getIsLocal(): boolean {
+    return this.isLocal;
+  }
+
   // Helper: Get local DB content
   private getLocalDB(): LocalDB {
     try {
@@ -245,10 +256,13 @@ class DatabaseAdapter {
     }
   }
 
-  async createUser(user: Omit<User, 'id' | 'xp' | 'streak' | 'last_active'> & { password_hash?: string }): Promise<User> {
+  async createUser(
+    user: Omit<User, 'id' | 'xp' | 'streak' | 'last_active'> & { password_hash?: string },
+    explicitId?: string
+  ): Promise<User> {
     const newUser: User = {
       ...user,
-      id: crypto.randomUUID(),
+      id: explicitId || crypto.randomUUID(),
       xp: 0,
       streak: 1,
       last_active: new Date().toISOString().split('T')[0],

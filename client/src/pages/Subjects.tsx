@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStudyPlan } from '../context/StudyPlanContext';
 import { 
   Plus, Trash2, Edit, FileText, ChevronDown, ChevronUp, Book, 
@@ -9,7 +9,7 @@ export const Subjects: React.FC = () => {
   const { 
     subjects, exams, addSubject, updateSubject, deleteSubject, 
     getUnits, addUnit, updateUnit, deleteUnit, addExam, deleteExam, 
-    parseSyllabusPDF, syncAllData 
+    parseSyllabusPDF, syncAllData, getDifficultyEstimation 
   } = useStudyPlan();
 
   // Subject Form States
@@ -19,6 +19,7 @@ export const Subjects: React.FC = () => {
   const [subDiff, setSubDiff] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [subCredits, setSubCredits] = useState('3');
   const [subPriority, setSubPriority] = useState<'low' | 'medium' | 'high'>('medium');
+  const [subGrade, setSubGrade] = useState(''); // New: classroom grade
   const [editingSubId, setEditingSubId] = useState<string | null>(null);
 
   // Exam Form States
@@ -27,6 +28,7 @@ export const Subjects: React.FC = () => {
   const [examSubId, setExamSubId] = useState('');
   const [examDate, setExamDate] = useState('');
   const [examWeight, setExamWeight] = useState('20');
+  const [examScore, setExamScore] = useState(''); // New: exam score achieved
 
   // Expanded Subject Units View
   const [expandedSubId, setExpandedSubId] = useState<string | null>(null);
@@ -38,7 +40,26 @@ export const Subjects: React.FC = () => {
   const [isParsingPdf, setIsParsingPdf] = useState(false);
   const [pdfStatus, setPdfStatus] = useState<string | null>(null);
 
-  const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6', '#06b6d4', '#14b8a6'];
+  // AI Difficulties State
+  const [aiDifficulties, setAiDifficulties] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchAIDifficulties = async () => {
+      if (subjects.length > 0) {
+        try {
+          const data = await getDifficultyEstimation();
+          setAiDifficulties(data);
+        } catch (err) {
+          console.error("Failed to load AI difficulties:", err);
+        }
+      } else {
+        setAiDifficulties([]);
+      }
+    };
+    fetchAIDifficulties();
+  }, [subjects]);
+
+  const colors = ['#4F46E5', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6', '#06b6d4', '#14b8a6'];
 
   const handleOpenEdit = (sub: any) => {
     setEditingSubId(sub.id);
@@ -47,6 +68,7 @@ export const Subjects: React.FC = () => {
     setSubDiff(sub.difficulty_level);
     setSubCredits(sub.credits.toString());
     setSubPriority(sub.priority);
+    setSubGrade(sub.current_grade !== undefined && sub.current_grade !== null ? sub.current_grade.toString() : '');
     setShowSubModal(true);
   };
 
@@ -59,7 +81,8 @@ export const Subjects: React.FC = () => {
       color: subColor,
       difficulty_level: subDiff,
       credits: parseInt(subCredits) || 3,
-      priority: subPriority
+      priority: subPriority,
+      current_grade: subGrade.trim() !== '' ? parseFloat(subGrade) : undefined
     };
 
     try {
@@ -70,6 +93,7 @@ export const Subjects: React.FC = () => {
       }
       setShowSubModal(false);
       resetSubjectForm();
+      syncAllData(); // reload difficulty estimation
     } catch (err) {
       console.error(err);
     }
@@ -78,10 +102,11 @@ export const Subjects: React.FC = () => {
   const resetSubjectForm = () => {
     setEditingSubId(null);
     setSubName('');
-    setSubColor('#6366f1');
+    setSubColor('#4F46E5');
     setSubDiff('medium');
     setSubCredits('3');
     setSubPriority('medium');
+    setSubGrade('');
   };
 
   const handleExamSubmit = async (e: React.FormEvent) => {
@@ -93,13 +118,15 @@ export const Subjects: React.FC = () => {
         subject_id: examSubId,
         name: examName,
         exam_date: examDate,
-        weightage: parseFloat(examWeight) || 20
-      });
+        weightage: parseFloat(examWeight) || 20,
+        score: examScore.trim() !== '' ? parseFloat(examScore) : undefined
+      } as any);
       setShowExamModal(false);
       setExamName('');
       setExamSubId('');
       setExamDate('');
       setExamWeight('20');
+      setExamScore('');
       syncAllData(); // Reload stats and schedules
     } catch (err) {
       console.error(err);
@@ -247,11 +274,32 @@ export const Subjects: React.FC = () => {
                         ? 'bg-red-950/20 text-red-400 border-red-900/30' 
                         : sub.difficulty_level === 'medium' ? 'bg-orange-950/20 text-orange-400 border-orange-900/30' : 'bg-emerald-950/20 text-emerald-400 border-emerald-900/30'
                     }`}>
-                      {sub.difficulty_level}
+                      Manual: {sub.difficulty_level}
                     </span>
                     <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-950/20 text-indigo-300 border border-indigo-900/30">
                       Priority: {sub.priority}
                     </span>
+                    {sub.current_grade !== undefined && sub.current_grade !== null && (
+                      <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-950/20 text-emerald-400 border border-emerald-900/30">
+                        Grade: {sub.current_grade}%
+                      </span>
+                    )}
+                    {(() => {
+                      const aiDiff = aiDifficulties.find(d => d.subjectId === sub.id);
+                      if (!aiDiff) return null;
+                      return (
+                        <span 
+                          className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border flex items-center gap-1 cursor-help ${
+                            aiDiff.estimatedDifficulty === 'hard' 
+                              ? 'bg-red-950/20 text-red-400 border-red-900/30' 
+                              : aiDiff.estimatedDifficulty === 'medium' ? 'bg-orange-950/20 text-orange-400 border-orange-900/30' : 'bg-emerald-950/20 text-emerald-400 border-emerald-900/30'
+                          }`}
+                          title={`AI Explanation: ${aiDiff.explanation} (Confidence: ${aiDiff.confidence}%)`}
+                        >
+                          🤖 AI: {aiDiff.estimatedDifficulty}
+                        </span>
+                      );
+                    })()}
                   </div>
                 </div>
                 
@@ -460,6 +508,19 @@ export const Subjects: React.FC = () => {
                 </select>
               </div>
 
+              <div>
+                <label className="text-[10px] text-gray-400 uppercase font-bold tracking-widest block mb-1">Classroom Grade (%) (Optional)</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="e.g. 85 (leave blank if new course)"
+                  value={subGrade}
+                  onChange={e => setSubGrade(e.target.value)}
+                  className="w-full bg-gray-950/60 border border-gray-850 py-2 px-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-white"
+                />
+              </div>
+
               {/* Color list selector */}
               <div>
                 <label className="text-[10px] text-gray-400 uppercase font-bold tracking-widest block mb-1.5">Color Tag</label>
@@ -543,21 +604,35 @@ export const Subjects: React.FC = () => {
                     max="100"
                     required
                     value={examWeight}
-                    onChange={e => setWarmWeight(e.target.value)} // Wait, it's setExamWeight, let's fix it below
+                    onChange={e => setExamWeight(e.target.value)}
                     className="w-full bg-gray-950/60 border border-gray-850 py-2 px-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-white"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="text-[10px] text-gray-400 uppercase font-bold tracking-widest block mb-1">Exam Date</label>
-                <input
-                  type="date"
-                  required
-                  value={examDate}
-                  onChange={e => setExamDate(e.target.value)}
-                  className="w-full bg-gray-950/60 border border-gray-850 py-2 px-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-white"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] text-gray-400 uppercase font-bold tracking-widest block mb-1">Exam Date</label>
+                  <input
+                    type="date"
+                    required
+                    value={examDate}
+                    onChange={e => setExamDate(e.target.value)}
+                    className="w-full bg-gray-950/60 border border-gray-850 py-2 px-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-gray-400 uppercase font-bold tracking-widest block mb-1">Score Achieved (%) (Optional)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="e.g. 88 (leave blank if upcoming)"
+                    value={examScore}
+                    onChange={e => setExamScore(e.target.value)}
+                    className="w-full bg-gray-950/60 border border-gray-850 py-2 px-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-white"
+                  />
+                </div>
               </div>
 
               <div className="flex gap-2 justify-end pt-2">

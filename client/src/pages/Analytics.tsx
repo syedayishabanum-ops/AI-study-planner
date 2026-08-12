@@ -1,5 +1,6 @@
 import React from 'react';
 import { useStudyPlan } from '../context/StudyPlanContext';
+import { useTheme } from '../context/ThemeContext';
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend 
@@ -8,6 +9,7 @@ import { BarChart2, Clock, CheckCircle2, TrendingUp } from 'lucide-react';
 
 export const Analytics: React.FC = () => {
   const { progressLogs, subjects, tasks } = useStudyPlan();
+  const { theme } = useTheme();
 
   // Create default past 7 days records if DB is empty
   const defaultLogs = [
@@ -113,13 +115,17 @@ export const Analytics: React.FC = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={studyLogsData}>
-                <XAxis dataKey="date" stroke="#9ca3af" fontSize={11} tickLine={false} />
-                <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} />
+                <XAxis dataKey="date" stroke={theme === 'light' ? '#6B7280' : '#9ca3af'} fontSize={11} tickLine={false} />
+                <YAxis stroke={theme === 'light' ? '#6B7280' : '#9ca3af'} fontSize={11} tickLine={false} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }} 
-                  labelStyle={{ color: '#9ca3af' }}
+                  contentStyle={
+                    theme === 'light'
+                      ? { backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', color: '#1F2937' }
+                      : { backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px' }
+                  } 
+                  labelStyle={theme === 'light' ? { color: '#6B7280' } : { color: '#9ca3af' }}
                 />
-                <Bar dataKey="study_hours" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="study_hours" fill="#4F46E5" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -146,7 +152,11 @@ export const Analytics: React.FC = () => {
                     ))}
                   </Pie>
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}
+                    contentStyle={
+                      theme === 'light'
+                        ? { backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', color: '#1F2937' }
+                        : { backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px' }
+                    }
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -169,11 +179,15 @@ export const Analytics: React.FC = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={studyLogsData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(156,163,175,0.1)" />
-                <XAxis dataKey="date" stroke="#9ca3af" fontSize={11} tickLine={false} />
-                <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke={theme === 'light' ? '#E5E7EB' : 'rgba(156,163,175,0.1)'} />
+                <XAxis dataKey="date" stroke={theme === 'light' ? '#6B7280' : '#9ca3af'} fontSize={11} tickLine={false} />
+                <YAxis stroke={theme === 'light' ? '#6B7280' : '#9ca3af'} fontSize={11} tickLine={false} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}
+                  contentStyle={
+                    theme === 'light'
+                      ? { backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', color: '#1F2937' }
+                      : { backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px' }
+                  }
                 />
                 <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '11px' }} />
                 <Line type="monotone" dataKey="productivity_score" name="Productivity Rating" stroke="#10b981" strokeWidth={2.5} activeDot={{ r: 6 }} />

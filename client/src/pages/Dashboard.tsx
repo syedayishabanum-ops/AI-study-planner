@@ -4,38 +4,65 @@ import { useAuth } from '../context/AuthContext';
 import { useStudyPlan } from '../context/StudyPlanContext';
 import { 
   Zap, Calendar, BookOpen, Clock, Bot, Award, CheckSquare, 
-  Square, Flame, TrendingUp, Sparkles, Plus, AlertCircle 
+  Square, Flame, TrendingUp, Sparkles, Plus, AlertCircle, HelpCircle
 } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { 
     subjects, exams, tasks, studyPlans, achievements, 
-    toggleTaskComplete, syncAllData, logStudySession 
+    toggleTaskComplete, syncAllData, logStudySession,
+    getDashboardInsights, triggerAdaptiveSync
   } = useStudyPlan();
   
   const navigate = useNavigate();
-  const [insightQuote, setInsightQuote] = useState("Loading your active study insights...");
+  const [insightsData, setInsightsData] = useState<any>(null);
+  const [isLoadingInsights, setIsLoadingInsights] = useState(true);
+  const [isSyncingPlan, setIsSyncingPlan] = useState(false);
+  const [hasMissedTasks, setHasMissedTasks] = useState(false);
+  const [missedTasksCount, setMissedTasksCount] = useState(0);
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  const fetchInsights = async () => {
+    setIsLoadingInsights(true);
+    try {
+      const data = await getDashboardInsights();
+      setInsightsData(data);
+    } catch (err) {
+      console.error("Failed to load dashboard insights:", err);
+    } finally {
+      setIsLoadingInsights(false);
+    }
+  };
 
   useEffect(() => {
-    // Generate simple dynamic insights based on achievements / exams
-    if (exams.length > 0) {
-      const sorted = [...exams].sort((a, b) => new Date(a.exam_date).getTime() - new Date(b.exam_date).getTime());
-      const next = sorted[0];
-      const daysLeft = Math.ceil((new Date(next.exam_date).getTime() - Date.now()) / (1000 * 3600 * 24));
-      
-      if (daysLeft <= 3 && daysLeft >= 0) {
-        setInsightQuote(`⚠️ High alert! Your ${next.name} exam is in ${daysLeft} days. I've locked revision blocks. Focus exclusively on past papers and sleep well!`);
-      } else {
-        setInsightQuote(`💡 Academic Coach Advice: You have ${daysLeft} days until your next exam (${next.name}). Reviewing weak topics early in 25-minute Pomodoro sprints builds confidence.`);
-      }
+    fetchInsights();
+    
+    // Check for missed tasks: pending tasks with due dates <= todayStr
+    const overdue = tasks.filter(t => t.status === 'pending' && t.due_date <= todayStr);
+    if (overdue.length > 0) {
+      setHasMissedTasks(true);
+      setMissedTasksCount(overdue.length);
     } else {
-      setInsightQuote("💡 Academic Coach Advice: Welcome! To optimize your routine, first add your current Subjects and Exam dates, then click 'Generate AI Plan' to schedule study sessions.");
+      setHasMissedTasks(false);
+      setMissedTasksCount(0);
     }
-  }, [exams]);
+  }, [tasks, subjects]);
+
+  const handleAdaptiveSync = async () => {
+    setIsSyncingPlan(true);
+    try {
+      await triggerAdaptiveSync();
+      setHasMissedTasks(false);
+    } catch (err) {
+      console.error("Failed to sync plan adaptively:", err);
+    } finally {
+      setIsSyncingPlan(false);
+    }
+  };
 
   // Math variables
-  const todayStr = new Date().toISOString().split('T')[0];
   const level = Math.floor((user?.xp || 0) / 100) + 1;
   const levelProgress = (user?.xp || 0) % 100;
 
@@ -60,6 +87,26 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
+      {/* Adaptive Sync Alert Banner */}
+      {hasMissedTasks && (
+        <div className="glass-panel p-4 rounded-2xl bg-amber-500/10 border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-pulse">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="text-amber-500 shrink-0" size={24} />
+            <div>
+              <h4 className="font-display font-bold text-sm text-white">Overdue study targets detected</h4>
+              <p className="text-xs text-gray-400 mt-0.5">AI analyzed your timeline and identified {missedTasksCount} incomplete tasks. Keep your schedule optimal by adapting your plan.</p>
+            </div>
+          </div>
+          <button
+            onClick={handleAdaptiveSync}
+            disabled={isSyncingPlan}
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow shadow-amber-600/15"
+          >
+            {isSyncingPlan ? 'Optimizing...' : 'Adapt Calendar 🪄'}
+          </button>
+        </div>
+      )}
+
       {/* Welcome Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800/10 pb-4">
         <div>
@@ -77,7 +124,7 @@ export const Dashboard: React.FC = () => {
           </Link>
           <Link
             to="/chat"
-            className="px-4 py-2 glass-panel hover:bg-gray-800/30 text-xs font-bold rounded-xl transition flex items-center gap-1.5"
+            className="px-4 py-2 glass-panel hover:bg-gray-800/30 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer text-gray-300 hover:text-white"
           >
             <Bot size={14} /> Ask Assistant
           </Link>
@@ -152,18 +199,118 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* AI Motivational Insight Widget */}
-      <div className="glass-panel p-5 rounded-2xl bg-indigo-950/15 border-indigo-900/20 flex gap-4 items-start relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none" />
-        <div className="p-2.5 bg-indigo-600/10 text-indigo-400 rounded-xl border border-indigo-500/10 shrink-0">
-          <Bot size={22} className="glow-glow" />
+      {/* AI Insights & Diagnostics Dashboard Panel */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Performance Predictor Card */}
+        <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-indigo-400 uppercase font-extrabold tracking-widest block">AI Grade Prediction</span>
+              <span className="text-[10px] bg-indigo-950/20 text-indigo-400 border border-indigo-900/40 px-2 py-0.5 rounded font-bold">
+                {insightsData?.prediction?.confidence || 75}% Confidence
+              </span>
+            </div>
+            
+            <div className="flex items-baseline gap-2.5">
+              <span className="font-display font-black text-5xl text-white">
+                {insightsData?.prediction?.grade || 'B'}
+              </span>
+              <span className="text-sm font-semibold text-gray-400">
+                Predicted GPA: {insightsData?.prediction?.predictedGpa?.toFixed(2) || '3.00'}
+              </span>
+            </div>
+
+            <p className="text-xs text-gray-300 leading-relaxed italic">
+              "{insightsData?.prediction?.interpretation || 'Complete tasks and log daily study hours to construct an academic performance profile.'}"
+            </p>
+
+            <div className="space-y-2 pt-2 border-t border-gray-800/40">
+              <span className="text-[9px] text-gray-500 uppercase tracking-wider font-extrabold block">Prediction Influencers</span>
+              {insightsData?.prediction?.factors?.map((factor: any, idx: number) => (
+                <div key={idx} className="flex gap-2 items-start text-xs">
+                  <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${factor.impact === 'positive' ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                  <div>
+                    <span className="font-bold text-gray-200 text-left block">{factor.name}</span>
+                    <p className="text-gray-400 text-[10px] mt-0.5 text-left">{factor.description}</p>
+                  </div>
+                </div>
+              )) || (
+                <p className="text-[10px] text-gray-500 italic">No tracking records yet. Keep study streaks alive.</p>
+              )}
+            </div>
+          </div>
         </div>
-        <div>
-          <span className="text-[10px] text-indigo-400 uppercase font-extrabold tracking-widest block">Aegis AI Insights</span>
-          <p className="text-sm text-gray-200 mt-1.5 leading-relaxed font-medium italic">
-            "{insightQuote}"
-          </p>
+
+        {/* AI Recommendations (Next Actions) */}
+        <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <span className="text-[10px] text-cyan-400 uppercase font-extrabold tracking-widest block mb-4">Recommended Next Actions</span>
+            <div className="space-y-3.5">
+              {insightsData?.recommendations?.map((rec: any, idx: number) => (
+                <div 
+                  key={idx} 
+                  className="p-3 rounded-xl border border-gray-850 bg-gray-950/10 flex gap-2.5 items-start transition hover:border-indigo-500/20"
+                >
+                  <div className={`p-1.5 rounded-lg shrink-0 ${
+                    rec.priority === 'high' ? 'bg-red-500/10 text-red-400 border border-red-900/30' :
+                    rec.priority === 'medium' ? 'bg-orange-500/10 text-orange-400 border border-orange-900/30' :
+                    'bg-indigo-500/10 text-indigo-400 border border-indigo-900/30'
+                  }`}>
+                    <Sparkles size={14} className="fill-current" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-gray-200">{rec.title}</span>
+                      <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                        rec.priority === 'high' ? 'bg-red-950/30 text-red-400' :
+                        rec.priority === 'medium' ? 'bg-orange-950/30 text-orange-400' :
+                        'bg-indigo-950/30 text-indigo-400'
+                      }`}>
+                        {rec.priority}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-1 leading-relaxed text-left">{rec.description}</p>
+                  </div>
+                </div>
+              )) || (
+                <p className="text-xs text-gray-500 italic py-4">No recommended items. Add exams or subjects.</p>
+              )}
+            </div>
+          </div>
         </div>
+
+        {/* Weak Topics Warning Panel */}
+        <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <span className="text-[10px] text-emerald-400 uppercase font-extrabold tracking-widest block mb-4">Weak Topics Diagnostics</span>
+            {insightsData?.weakTopics && insightsData.weakTopics.length > 0 ? (
+              <div className="space-y-3.5">
+                {insightsData.weakTopics.map((wt: any, idx: number) => (
+                  <div key={idx} className="space-y-1.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-bold text-gray-200">{wt.subjectName}</span>
+                      <span className="text-red-400 font-bold">{wt.score}% Avg</span>
+                    </div>
+                    <p className="text-[10px] text-gray-400 leading-normal text-left">{wt.reason}</p>
+                    <div className="flex gap-2">
+                      <span className="text-[9px] text-indigo-400 font-bold uppercase shrink-0">Tips:</span>
+                      <span className="text-[9px] text-gray-400 truncate">{wt.recommendedFirstSteps[0]}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Bot className="text-emerald-400/30 mx-auto mb-2" size={32} />
+                <p className="text-xs text-gray-300 font-bold font-display">Diagnostics: Excellent!</p>
+                <p className="text-[10px] text-gray-400 mt-1">All subjects maintain scoring profiles above target thresholds.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
 
       {/* Main Grid Panels */}

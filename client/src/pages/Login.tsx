@@ -43,22 +43,56 @@ export const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     setError(null);
     setSuccess(null);
+
+    // Frontend validation checks
+    if (activeTab === 'signup') {
+      if (!fullName.trim()) {
+        setError('Full Name is required.');
+        return;
+      }
+    }
+
+    if (!email.trim()) {
+      setError('Email Address is required.');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    if (!password) {
+      setError('Password is required.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       if (activeTab === 'login') {
-        await login(email, password);
+        await login(email.trim(), password);
         setSuccess('Logged in successfully!');
         navigate('/dashboard');
       } else {
-        if (password.length < 6) {
-          throw new Error('Password must be at least 6 characters.');
+        const result = await signup(email.trim(), password, fullName.trim());
+        if (result && result.confirmationRequired) {
+          setSuccess(result.message || 'Registration successful! Please check your email to confirm your account.');
+          // Stay on signup page/tab so the user reads the instructions
+        } else {
+          setSuccess('Account created successfully!');
+          navigate('/dashboard');
         }
-        await signup(email, password, fullName);
-        setSuccess('Account created successfully!');
-        navigate('/dashboard');
       }
     } catch (err: any) {
       setError(err.message || 'Operation failed.');

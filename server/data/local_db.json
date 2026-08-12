@@ -2,7 +2,7 @@
   "users": [
     {
       "email": "scholar.sam@gmail.com",
-      "full_name": "Sam Scholar",
+      "full_name": "Syed Ayisha Banu",
       "avatar_url": "https://api.dicebear.com/7.x/adventurer/svg?seed=Sam",
       "settings": {
         "darkMode": true,
@@ -14,7 +14,7 @@
       "id": "30b10422-03e4-4790-8cc0-ff45d417b674",
       "xp": 0,
       "streak": 1,
-      "last_active": "2026-07-28"
+      "last_active": "2026-08-07"
     },
     {
       "email": "preethikaragupathi@gmail.com",
@@ -48,7 +48,41 @@
       "id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac",
       "xp": 0,
       "streak": 1,
-      "last_active": "2026-07-28"
+      "last_active": "2026-08-11"
+    },
+    {
+      "email": "test_student_ai@example.com",
+      "password_hash": "$2a$10$lGzWd92iLpbda46stkW8RuE8IvI.zyYn3NPbeeDFBgornCw0ashIC",
+      "full_name": "Test Student AI",
+      "avatar_url": "https://api.dicebear.com/7.x/adventurer/svg?seed=Test%20Student%20AI",
+      "settings": {
+        "darkMode": true,
+        "studyReminders": true,
+        "examReminders": true,
+        "breakReminders": true,
+        "preferredHours": 4
+      },
+      "id": "564c856f-97c7-442c-88da-008e1d695131",
+      "xp": 0,
+      "streak": 1,
+      "last_active": "2026-08-07"
+    },
+    {
+      "email": "sam.scholar@test.edu",
+      "password_hash": "$2a$10$kEuRRtZGPeu4quzKQJ8nku6puRoWoop2erLCYMBLfkxX.HgkJQYiq",
+      "full_name": "Syed Ayisha Banu",
+      "avatar_url": "https://api.dicebear.com/7.x/adventurer/svg?seed=Scribble",
+      "settings": {
+        "darkMode": true,
+        "studyReminders": true,
+        "examReminders": true,
+        "breakReminders": true,
+        "preferredHours": 4
+      },
+      "id": "f106d335-5801-4afc-9f61-4c407d3f75d2",
+      "xp": 0,
+      "streak": 1,
+      "last_active": "2026-08-11"
     }
   ],
   "subjects": [
@@ -62,20 +96,448 @@
       "user_id": "76ca511b-783d-4e8b-b3f4-09c93b98645d"
     },
     {
-      "name": "Tamil",
-      "color": "#8b5cf6",
+      "name": "english",
+      "color": "#ec4899",
       "difficulty_level": "medium",
-      "credits": 5,
+      "credits": 7,
       "priority": "medium",
       "id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
       "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "name": "CS101",
+      "color": "#6366f1",
+      "difficulty_level": "medium",
+      "credits": 4,
+      "priority": "medium",
+      "id": "f8c86fae-b639-408d-90a0-5b206a471b37",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    },
+    {
+      "name": "Computer Science 101",
+      "color": "#4F46E5",
+      "difficulty_level": "hard",
+      "credits": 4,
+      "priority": "high",
+      "current_grade": 62,
+      "id": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131"
     }
   ],
   "units": [],
-  "exams": [],
-  "tasks": [],
-  "studyPlans": [],
+  "exams": [
+    {
+      "subject_id": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+      "name": "CS101 Midterm",
+      "exam_date": "2026-08-11",
+      "weightage": 30,
+      "score": 58,
+      "id": "290ecc32-d272-4ee9-8dc0-f8aa5971ac0c",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131"
+    }
+  ],
+  "tasks": [
+    {
+      "subject_id": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+      "title": "STUDY: Computer Science 101 - Targeted Revision: Weak areas and active recall exercise",
+      "status": "pending",
+      "due_date": "2026-08-07",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "e38450c8-f5ed-4ae2-aa36-5e8921832907",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131"
+    },
+    {
+      "subject_id": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+      "title": "BUFFER: Computer Science 101 - EXAM CRAM SESSION: Solve past papers for CS101 Midterm",
+      "status": "pending",
+      "due_date": "2026-08-08",
+      "type": "exam",
+      "priority": "high",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "4868e9ac-a49d-4d38-bcf6-a415382f2151",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131"
+    },
+    {
+      "subject_id": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+      "title": "BUFFER: Computer Science 101 - EXAM CRAM SESSION: Solve past papers for CS101 Midterm",
+      "status": "pending",
+      "due_date": "2026-08-09",
+      "type": "exam",
+      "priority": "high",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "b08046d4-962c-4d85-8e4e-af9e4101139e",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131"
+    },
+    {
+      "subject_id": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+      "title": "BUFFER: Computer Science 101 - EXAM CRAM SESSION: Solve past papers for CS101 Midterm",
+      "status": "pending",
+      "due_date": "2026-08-10",
+      "type": "exam",
+      "priority": "high",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "9588c58f-7b3d-4505-b2a2-8a169c6e6197",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131"
+    },
+    {
+      "subject_id": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+      "title": "BUFFER: Computer Science 101 - EXAM CRAM SESSION: Solve past papers for CS101 Midterm",
+      "status": "pending",
+      "due_date": "2026-08-11",
+      "type": "exam",
+      "priority": "high",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "a50bc376-c326-4107-a0f5-224662afede4",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131"
+    },
+    {
+      "subject_id": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+      "title": "STUDY: Computer Science 101 - Targeted Revision: Weak areas and active recall exercise",
+      "status": "pending",
+      "due_date": "2026-08-12",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "5a8ae836-dbc3-4065-a938-5b860b4fb2bf",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131"
+    },
+    {
+      "subject_id": "f8c86fae-b639-408d-90a0-5b206a471b37",
+      "title": "REVISION: CS101 - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-08-07",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "7a36d20e-ab4e-4a70-b5c3-4a5dc84a9438",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    },
+    {
+      "subject_id": "f8c86fae-b639-408d-90a0-5b206a471b37",
+      "title": "STUDY: CS101 - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-08-08",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "3017e418-a715-43ec-b403-d0a8524faf5a",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    },
+    {
+      "subject_id": "f8c86fae-b639-408d-90a0-5b206a471b37",
+      "title": "REVISION: CS101 - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-08-09",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "28df859a-82c3-4a5b-a665-d938d2086daf",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    },
+    {
+      "subject_id": "f8c86fae-b639-408d-90a0-5b206a471b37",
+      "title": "STUDY: CS101 - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-08-10",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "0ec1bc66-f266-4805-a991-efcd5ac64c3f",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    },
+    {
+      "subject_id": "f8c86fae-b639-408d-90a0-5b206a471b37",
+      "title": "REVISION: CS101 - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-08-11",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "78ca1ed4-e37e-47b7-b06e-2abad0074d4b",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    },
+    {
+      "subject_id": "f8c86fae-b639-408d-90a0-5b206a471b37",
+      "title": "STUDY: CS101 - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-08-12",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "771c5573-f6d4-4898-a18f-39d33aaaa9a2",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    },
+    {
+      "subject_id": "f8c86fae-b639-408d-90a0-5b206a471b37",
+      "title": "REVISION: CS101 - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-08-13",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "2a46d9c3-0134-42c3-b8d8-5b744c0862a9",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    },
+    {
+      "subject_id": "f8c86fae-b639-408d-90a0-5b206a471b37",
+      "title": "STUDY: CS101 - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-08-14",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "6edad717-7ab0-4a2a-ba56-9cc8f394bde9",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    }
+  ],
+  "studyPlans": [
+    {
+      "start_date": "2026-08-07",
+      "end_date": "2026-08-12",
+      "config": {
+        "dailyHours": 4,
+        "weakSubjects": [
+          "Computer Science 101"
+        ],
+        "preferredStudyTime": "afternoon",
+        "breakDuration": 15
+      },
+      "schedule": [
+        {
+          "date": "2026-08-07",
+          "slots": [
+            {
+              "subjectId": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+              "subjectName": "Computer Science 101",
+              "color": "#4F46E5",
+              "topic": "Targeted Revision: Weak areas and active recall exercise",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-08",
+          "slots": [
+            {
+              "subjectId": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+              "subjectName": "Computer Science 101",
+              "color": "#4F46E5",
+              "topic": "EXAM CRAM SESSION: Solve past papers for CS101 Midterm",
+              "duration": 120,
+              "type": "buffer"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-09",
+          "slots": [
+            {
+              "subjectId": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+              "subjectName": "Computer Science 101",
+              "color": "#4F46E5",
+              "topic": "EXAM CRAM SESSION: Solve past papers for CS101 Midterm",
+              "duration": 120,
+              "type": "buffer"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-10",
+          "slots": [
+            {
+              "subjectId": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+              "subjectName": "Computer Science 101",
+              "color": "#4F46E5",
+              "topic": "EXAM CRAM SESSION: Solve past papers for CS101 Midterm",
+              "duration": 120,
+              "type": "buffer"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-11",
+          "slots": [
+            {
+              "subjectId": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+              "subjectName": "Computer Science 101",
+              "color": "#4F46E5",
+              "topic": "EXAM CRAM SESSION: Solve past papers for CS101 Midterm",
+              "duration": 120,
+              "type": "buffer"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-12",
+          "slots": [
+            {
+              "subjectId": "a26ec7c0-96f5-460e-85af-c2e7ecea54ac",
+              "subjectName": "Computer Science 101",
+              "color": "#4F46E5",
+              "topic": "Targeted Revision: Weak areas and active recall exercise",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        }
+      ],
+      "id": "c5b7aa8e-fa8e-48fd-99fa-5bad92f2ce8d",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131"
+    },
+    {
+      "start_date": "2026-08-07",
+      "end_date": "2026-08-14",
+      "config": {
+        "dailyHours": 4,
+        "weakSubjects": [],
+        "preferredStudyTime": "afternoon",
+        "breakDuration": 10
+      },
+      "schedule": [
+        {
+          "date": "2026-08-07",
+          "slots": [
+            {
+              "subjectId": "f8c86fae-b639-408d-90a0-5b206a471b37",
+              "subjectName": "CS101",
+              "color": "#6366f1",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-08",
+          "slots": [
+            {
+              "subjectId": "f8c86fae-b639-408d-90a0-5b206a471b37",
+              "subjectName": "CS101",
+              "color": "#6366f1",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-09",
+          "slots": [
+            {
+              "subjectId": "f8c86fae-b639-408d-90a0-5b206a471b37",
+              "subjectName": "CS101",
+              "color": "#6366f1",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-10",
+          "slots": [
+            {
+              "subjectId": "f8c86fae-b639-408d-90a0-5b206a471b37",
+              "subjectName": "CS101",
+              "color": "#6366f1",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-11",
+          "slots": [
+            {
+              "subjectId": "f8c86fae-b639-408d-90a0-5b206a471b37",
+              "subjectName": "CS101",
+              "color": "#6366f1",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-12",
+          "slots": [
+            {
+              "subjectId": "f8c86fae-b639-408d-90a0-5b206a471b37",
+              "subjectName": "CS101",
+              "color": "#6366f1",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-13",
+          "slots": [
+            {
+              "subjectId": "f8c86fae-b639-408d-90a0-5b206a471b37",
+              "subjectName": "CS101",
+              "color": "#6366f1",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-14",
+          "slots": [
+            {
+              "subjectId": "f8c86fae-b639-408d-90a0-5b206a471b37",
+              "subjectName": "CS101",
+              "color": "#6366f1",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        }
+      ],
+      "id": "83a720bf-87be-4bc8-a8c4-f1f74fc72670",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674"
+    }
+  ],
   "progress": [],
-  "achievements": [],
+  "achievements": [
+    {
+      "id": "24d20f67-1db3-497f-9a5f-7d7418ebc13e",
+      "user_id": "564c856f-97c7-442c-88da-008e1d695131",
+      "achievement_type": "planner",
+      "badge_name": "Master Planner",
+      "description": "Generated your first AI-optimized study plan!",
+      "unlocked_at": "2026-08-07T14:58:24.800Z"
+    },
+    {
+      "id": "ea6c4f47-ab28-42d6-bf74-f8d14c7ef3b0",
+      "user_id": "30b10422-03e4-4790-8cc0-ff45d417b674",
+      "achievement_type": "planner",
+      "badge_name": "Master Planner",
+      "description": "Generated your first AI-optimized study plan!",
+      "unlocked_at": "2026-08-07T15:15:56.150Z"
+    }
+  ],
   "notifications": []
 }

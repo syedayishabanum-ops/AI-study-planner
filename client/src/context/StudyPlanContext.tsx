@@ -127,6 +127,14 @@ interface StudyPlanContextType {
   unlockBadge: (badgeName: string, type: string, description: string) => Promise<void>;
   markNotificationRead: (id: string) => Promise<void>;
   
+  // AI Diagnostics & Adaptability
+  getPerformancePrediction: () => Promise<any>;
+  getWeakTopics: () => Promise<any>;
+  getAIRecommendations: () => Promise<any>;
+  getDifficultyEstimation: () => Promise<any>;
+  getDashboardInsights: () => Promise<any>;
+  triggerAdaptiveSync: () => Promise<any>;
+  
   // General Sync
   syncAllData: () => Promise<void>;
 }
@@ -397,6 +405,32 @@ export const StudyPlanProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
+  const getPerformancePrediction = async () => {
+    return await apiFetch('/ai/performance-prediction');
+  };
+
+  const getWeakTopics = async () => {
+    return await apiFetch('/ai/weak-topics');
+  };
+
+  const getAIRecommendations = async () => {
+    return await apiFetch('/ai/recommendations');
+  };
+
+  const getDifficultyEstimation = async () => {
+    return await apiFetch('/ai/difficulty-estimation');
+  };
+
+  const getDashboardInsights = async () => {
+    return await apiFetch('/ai/dashboard-insights');
+  };
+
+  const triggerAdaptiveSync = async () => {
+    const res = await apiFetch('/planner/adaptive-sync', { method: 'POST' });
+    await syncAllData();
+    return res;
+  };
+
   return (
     <StudyPlanContext.Provider
       value={{
@@ -430,6 +464,12 @@ export const StudyPlanProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         logStudySession,
         unlockBadge,
         markNotificationRead,
+        getPerformancePrediction,
+        getWeakTopics,
+        getAIRecommendations,
+        getDifficultyEstimation,
+        getDashboardInsights,
+        triggerAdaptiveSync,
         syncAllData
       }}
     >

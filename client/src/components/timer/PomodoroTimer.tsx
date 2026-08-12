@@ -195,7 +195,7 @@ export const PomodoroTimer: React.FC = () => {
             cy="110"
             r={radius}
             fill="transparent"
-            stroke={mode === 'work' ? '#6366f1' : '#10b981'}
+            stroke={mode === 'work' ? '#4F46E5' : '#10b981'}
             strokeWidth="8"
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}

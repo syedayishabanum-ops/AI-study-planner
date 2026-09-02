@@ -28,23 +28,41 @@ export interface GeneratedPlan {
 
 class GeminiService {
   private ai: GoogleGenerativeAI | null = null;
-  private isMock = true;
+  private _isMock = true;
 
-  constructor() {
+  private get isMock(): boolean {
+    this.initAI();
+    return this._isMock;
+  }
+
+  private initAI() {
+    if (this.ai) return;
+
     const apiKey = process.env.GEMINI_API_KEY;
+    console.log(`[Diagnostic] GEMINI_API_KEY loaded: ${!!apiKey}`);
+
     if (apiKey) {
       try {
         this.ai = new GoogleGenerativeAI(apiKey);
-        this.isMock = false;
+        this._isMock = false;
         console.log('Gemini AI Client initialized successfully.');
       } catch (err) {
         console.error('Failed to initialize Gemini Client. Falling back to Mock AI.', err);
-        this.isMock = true;
+        this._isMock = true;
       }
     } else {
       console.log('Gemini API Key missing. Running in Mock AI fallback mode.');
-      this.isMock = true;
+      this._isMock = true;
     }
+  }
+
+  constructor() {
+    this.initAI();
+  }
+
+  getAIClient(): GoogleGenerativeAI | null {
+    this.initAI();
+    return this.ai;
   }
 
   // Helper to extract JSON block from markdown strings

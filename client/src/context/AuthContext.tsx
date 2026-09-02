@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
 export interface User {
   id: string;
@@ -32,7 +32,7 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Authenticated API fetch helper
-  const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
+  const apiFetch = useCallback(async (endpoint: string, options: RequestInit = {}) => {
     const headers = new Headers(options.headers || {});
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
@@ -59,7 +59,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error(data.error || 'Something went wrong.');
     }
     return data;
-  };
+  }, [token]);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+  }, []);
 
   // On mount: fetch user profiles if token exists
   useEffect(() => {
@@ -79,7 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
     fetchMe();
-  }, [token]);
+  }, [token, apiFetch, logout]);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -93,7 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       let data;
       try {
         data = await response.json();
-      } catch (e) {
+      } catch {
         throw new Error('Failed to parse login response from server.');
       }
 
@@ -124,7 +130,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       let data;
       try {
         data = await response.json();
-      } catch (e) {
+      } catch {
         throw new Error('Failed to parse signup response from server.');
       }
 
@@ -159,7 +165,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       let data;
       try {
         data = await response.json();
-      } catch (e) {
+      } catch {
         throw new Error('Failed to parse Google login response from server.');
       }
 
@@ -176,12 +182,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-    setUser(null);
   };
 
   const updateProfile = async (updates: Partial<User>) => {

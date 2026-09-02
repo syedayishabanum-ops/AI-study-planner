@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Calendar, BookOpen, Clock, BarChart2, MessageSquare, Shield, CheckCircle, ArrowRight } from 'lucide-react';
+import { Sparkles, Calendar, BookOpen, Clock, BarChart2, MessageSquare, Shield, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Landing: React.FC = () => {

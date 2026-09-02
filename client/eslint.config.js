@@ -31,5 +31,11 @@ export default tseslint.config(
       'react-hooks/immutability': 'warn',
     },
   },
+  {
+    files: ['src/context/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
   eslintConfigPrettier,
 )

@@ -23,11 +23,6 @@ export const PomodoroTimer: React.FC = () => {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Synced initial settings
-  useEffect(() => {
-    setTimeLeft((mode === 'work' ? workMinutes : breakMinutes) * 60);
-  }, [workMinutes, breakMinutes, mode]);
-
   // Audio tone generator
   const triggerAlarmTone = (type: TimerMode) => {
     try {
@@ -73,47 +68,57 @@ export const PomodoroTimer: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isActive && timeLeft > 0) {
+    if (isActive) {
       timerRef.current = setInterval(() => {
-        setTimeLeft(prev => prev - 1);
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            // Timer finished!
+            setIsActive(false);
+            if (timerRef.current) clearInterval(timerRef.current);
+            
+            // Handle session changeover
+            setMode(currentMode => {
+              const nextMode = currentMode === 'work' ? 'break' : 'work';
+              triggerAlarmTone(nextMode);
+              sendSystemNotification(
+                nextMode === 'break' ? 'Pomodoro Done!' : 'Break Ended!',
+                nextMode === 'break' ? 'Time for a well-deserved break.' : 'Time to focus again.'
+              );
+              
+              if (currentMode === 'work') {
+                setSessionCount(s => {
+                  const nextCount = s + 1;
+                  // Log study session in progress analytics
+                  const hoursLogged = workMinutes / 60;
+                  logStudySession(hoursLogged, 90); // default to high productivity 90%
+                  
+                  // Unlock Achievements
+                  if (nextCount >= 1) {
+                    unlockBadge('First Focus', 'timer', 'Completed your first Pomodoro session!');
+                  }
+                  if (nextCount >= 4) {
+                    unlockBadge('Hyperfocus Guru', 'timer', 'Completed 4 Pomodoro sessions in one go!');
+                  }
+                  return nextCount;
+                });
+              }
+              
+              // Set the next duration
+              setTimeLeft((nextMode === 'work' ? workMinutes : breakMinutes) * 60);
+              return nextMode;
+            });
+            
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
-    } else if (timeLeft === 0 && isActive) {
-      setIsActive(false);
-      if (timerRef.current) clearInterval(timerRef.current);
-      
-      // Handle session changeover
-      if (mode === 'work') {
-        setSessionCount(prev => prev + 1);
-        triggerAlarmTone('break');
-        sendSystemNotification('Pomodoro Done!', 'Time for a well-deserved break.');
-        
-        // Log study session in progress analytics
-        const hoursLogged = workMinutes / 60;
-        logStudySession(hoursLogged, 90); // default to high productivity 90%
-        
-        // Unlock Achievements
-        if (sessionCount + 1 >= 1) {
-          unlockBadge('First Focus', 'timer', 'Completed your first Pomodoro session!');
-        }
-        if (sessionCount + 1 >= 4) {
-          unlockBadge('Hyperfocus Guru', 'timer', 'Completed 4 Pomodoro sessions in one go!');
-        }
-
-        // Shift to break
-        setMode('break');
-        setTimeLeft(breakMinutes * 60);
-      } else {
-        triggerAlarmTone('work');
-        sendSystemNotification('Break Ended!', 'Time to focus again.');
-        setMode('work');
-        setTimeLeft(workMinutes * 60);
-      }
     }
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isActive, timeLeft, mode, workMinutes, breakMinutes]);
+  }, [isActive, workMinutes, breakMinutes, logStudySession, unlockBadge]);
 
   const toggleStartPause = () => {
     // Request notification permission on first interaction

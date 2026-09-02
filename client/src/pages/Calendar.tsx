@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useStudyPlan } from '../context/StudyPlanContext';
-import { Sparkles, RefreshCw, Calendar as CalendarIcon, Info } from 'lucide-react';
+import { RefreshCw, Info } from 'lucide-react';
 
 export const Calendar: React.FC = () => {
   const { tasks, subjects, updateTaskDate, rescheduleMissedTasks, studyPlans, isLoading } = useStudyPlan();

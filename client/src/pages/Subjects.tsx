@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useStudyPlan } from '../context/StudyPlanContext';
 import { 
-  Plus, Trash2, Edit, FileText, ChevronDown, ChevronUp, Book, 
-  Sparkles, CheckSquare, Square, Percent, Calendar as CalendarIcon, Upload 
+  Plus, Trash2, Edit, ChevronDown, ChevronUp, Book, 
+  Sparkles, CheckSquare, Square, Calendar as CalendarIcon, Upload 
 } from 'lucide-react';
 
 export const Subjects: React.FC = () => {
   const { 
     subjects, exams, addSubject, updateSubject, deleteSubject, 
-    getUnits, addUnit, updateUnit, deleteUnit, addExam, deleteExam, 
+    getUnits, addUnit, updateUnit, deleteUnit, addExam, 
     parseSyllabusPDF, syncAllData, getDifficultyEstimation 
   } = useStudyPlan();
 
@@ -21,6 +21,7 @@ export const Subjects: React.FC = () => {
   const [subPriority, setSubPriority] = useState<'low' | 'medium' | 'high'>('medium');
   const [subGrade, setSubGrade] = useState(''); // New: classroom grade
   const [editingSubId, setEditingSubId] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Exam Form States
   const [showExamModal, setShowExamModal] = useState(false);
@@ -57,7 +58,7 @@ export const Subjects: React.FC = () => {
       }
     };
     fetchAIDifficulties();
-  }, [subjects]);
+  }, [subjects, getDifficultyEstimation]);
 
   const colors = ['#4F46E5', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6', '#06b6d4', '#14b8a6'];
 
@@ -75,6 +76,8 @@ export const Subjects: React.FC = () => {
   const handleSubjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!subName.trim()) return;
+
+    setErrorMsg(null);
 
     const payload = {
       name: subName,
@@ -94,8 +97,9 @@ export const Subjects: React.FC = () => {
       setShowSubModal(false);
       resetSubjectForm();
       syncAllData(); // reload difficulty estimation
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setErrorMsg(err.message || 'Failed to save subject. Please check your Supabase connection and try again.');
     }
   };
 
@@ -107,6 +111,7 @@ export const Subjects: React.FC = () => {
     setSubCredits('3');
     setSubPriority('medium');
     setSubGrade('');
+    setErrorMsg(null);
   };
 
   const handleExamSubmit = async (e: React.FormEvent) => {
@@ -212,7 +217,7 @@ export const Subjects: React.FC = () => {
         }
       };
       fileReader.readAsArrayBuffer(pdfFile);
-    } catch (err) {
+    } catch {
       setPdfStatus("Failed reading local file buffer.");
       setIsParsingPdf(false);
     }
@@ -454,6 +459,12 @@ export const Subjects: React.FC = () => {
               </h3>
               <p className="text-xs text-gray-400 mt-1">Provide credentials to optimize AI calendar generation.</p>
             </div>
+
+            {errorMsg && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3 rounded-xl">
+                {errorMsg}
+              </div>
+            )}
             
             <form onSubmit={handleSubjectSubmit} className="space-y-4">
               <div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useStudyPlan } from '../context/StudyPlanContext';
-import { User as UserIcon, Mail, Shield, Award, Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
+import { User as UserIcon, Award, Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
 
 export const Profile: React.FC = () => {
   const { user, updateProfile } = useAuth();

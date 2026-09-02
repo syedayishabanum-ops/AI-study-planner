@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useStudyPlan } from '../context/StudyPlanContext';
 import { 
-  Sparkles, Calendar, Clock, AlertTriangle, BookOpen, 
-  ChevronRight, Calendar as CalendarIcon, CheckCircle 
+  Sparkles, AlertTriangle, 
+  ChevronRight, Calendar as CalendarIcon 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

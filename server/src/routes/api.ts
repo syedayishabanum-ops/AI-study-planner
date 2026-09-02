@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import { db, User, Subject, Exam, Task, ProgressLog, Achievement, Notification } from '../db/dbAdapter';
 import { gemini } from '../services/geminiService';
+import { aiAgent } from '../services/aiAgentService';
 import { pdfService } from '../services/pdfService';
 import { authenticateToken, AuthRequest } from '../middleware/auth';
 
@@ -654,6 +655,23 @@ router.post('/chat', authenticateToken, async (req: AuthRequest, res) => {
     const reply = await gemini.askAssistant(message, history || [], enrichedContext);
 
     res.json({ reply });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ==================== AI STUDY PLANNER AGENT ROUTE ====================
+
+router.post('/agent/study', authenticateToken, async (req: AuthRequest, res) => {
+  const { message } = req.body;
+
+  if (!message) {
+    return res.status(400).json({ error: 'Message is required.' });
+  }
+
+  try {
+    const result = await aiAgent.processRequest(req.userId!, message);
+    res.json(result);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }

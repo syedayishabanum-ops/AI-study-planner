@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles, AlertCircle } from 'lucide-react';
+import { Send, Bot, User, Sparkles } from 'lucide-react';
 import { useStudyPlan } from '../../context/StudyPlanContext';
+
+const generateUniqueId = () => Math.random().toString(36).substring(7);
+const getNowDate = () => new Date();
 
 interface Message {
   id: string;
@@ -16,7 +19,7 @@ export const AIChatAssistant: React.FC = () => {
       id: 'welcome',
       sender: 'ai',
       text: "Hello! I am **Aegis**, your AI Academic Coach. 🎓\n\nI can help you:\n- Explain complex concepts.\n- Suggest study methods (Feynman Technique, Active Recall).\n- Generate customized revision schedules.\n- Give you a motivation boost!\n\nWhat are you studying today?",
-      timestamp: new Date()
+      timestamp: getNowDate()
     }
   ]);
   const [input, setInput] = useState('');
@@ -41,12 +44,12 @@ export const AIChatAssistant: React.FC = () => {
   const handleSendMessage = async (textToSend: string) => {
     if (!textToSend.trim()) return;
 
-    const userMsgId = Math.random().toString(36).substring(7);
+    const userMsgId = generateUniqueId();
     const userMsg: Message = {
       id: userMsgId,
       sender: 'user',
       text: textToSend,
-      timestamp: new Date()
+      timestamp: getNowDate()
     };
 
     setMessages(prev => [...prev, userMsg]);
@@ -66,18 +69,18 @@ export const AIChatAssistant: React.FC = () => {
       const reply = await sendChatMsg(textToSend, history);
       
       const aiMsg: Message = {
-        id: Math.random().toString(36).substring(7),
+        id: generateUniqueId(),
         sender: 'ai',
         text: reply,
-        timestamp: new Date()
+        timestamp: getNowDate()
       };
       setMessages(prev => [...prev, aiMsg]);
     } catch (err: any) {
       const errMsg: Message = {
-        id: Math.random().toString(36).substring(7),
+        id: generateUniqueId(),
         sender: 'ai',
         text: `⚠️ **Error:** Failed to connect to Gemini API. ${err.message || 'Check connection details.'}`,
-        timestamp: new Date()
+        timestamp: getNowDate()
       };
       setMessages(prev => [...prev, errMsg]);
     } finally {

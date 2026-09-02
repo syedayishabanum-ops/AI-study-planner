@@ -1,11 +1,7 @@
+import './loadEnv';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import path from 'path';
 import apiRouter from './routes/api';
-
-// Load environmental parameters from workspace root .env
-dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;

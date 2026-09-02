@@ -136,11 +136,14 @@ class DatabaseAdapter {
   private isLocal = true;
 
   constructor() {
-    const supabaseUrl = process.env.SUPABASE_URL;
+    let supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_KEY;
 
     if (supabaseUrl && supabaseKey) {
       try {
+        if (!supabaseUrl.startsWith('http://') && !supabaseUrl.startsWith('https://')) {
+          supabaseUrl = `https://${supabaseUrl}.supabase.co`;
+        }
         this.supabase = createClient(supabaseUrl, supabaseKey);
         this.isLocal = false;
         console.log('Successfully initialized Supabase connection.');
@@ -315,7 +318,14 @@ class DatabaseAdapter {
         .select('*')
         .eq('user_id', userId);
       if (error) return [];
-      return data;
+      
+      // Map columns from Supabase subjects table, injecting fallback defaults for columns 
+      // like credits/priority that are not stored in Supabase subjects table.
+      return data.map(sub => ({
+        ...sub,
+        credits: sub.credits !== undefined ? sub.credits : 3,
+        priority: sub.priority !== undefined ? sub.priority : 'medium',
+      }));
     }
   }
 
@@ -332,13 +342,28 @@ class DatabaseAdapter {
       this.saveLocalDB(db);
       return newSubject;
     } else {
+      // Filter payload to only include columns in the Supabase subjects table:
+      // id, user_id, name, color, difficulty_level
+      const supabasePayload = {
+        id: newSubject.id,
+        user_id: newSubject.user_id,
+        name: newSubject.name,
+        color: newSubject.color,
+        difficulty_level: newSubject.difficulty_level,
+      };
+
       const { data, error } = await this.supabase!
         .from('subjects')
-        .insert([newSubject])
+        .insert([supabasePayload])
         .select()
         .single();
       if (error) throw new Error(error.message);
-      return data;
+      
+      // Return a complete Subject object matching the UI types
+      return {
+        ...newSubject,
+        ...data,
+      };
     }
   }
 
@@ -351,9 +376,15 @@ class DatabaseAdapter {
       this.saveLocalDB(db);
       return db.subjects[idx];
     } else {
+      // Only updates name, color, or difficulty_level in the Supabase subjects table
+      const supabaseUpdates: any = {};
+      if (updates.name !== undefined) supabaseUpdates.name = updates.name;
+      if (updates.color !== undefined) supabaseUpdates.color = updates.color;
+      if (updates.difficulty_level !== undefined) supabaseUpdates.difficulty_level = updates.difficulty_level;
+
       const { data, error } = await this.supabase!
         .from('subjects')
-        .update(updates)
+        .update(supabaseUpdates)
         .eq('id', subjectId)
         .eq('user_id', userId)
         .select()

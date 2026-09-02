@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 
 export interface Subject {
@@ -8,6 +8,7 @@ export interface Subject {
   difficulty_level: 'easy' | 'medium' | 'hard';
   credits: number;
   priority: 'low' | 'medium' | 'high';
+  current_grade?: number;
 }
 
 export interface Unit {
@@ -123,6 +124,7 @@ interface StudyPlanContextType {
   rescheduleMissedTasks: (planId: string) => Promise<void>;
   parseSyllabusPDF: (subjectId: string, pdfBuffer: ArrayBuffer) => Promise<string[]>;
   sendChatMsg: (message: string, history: Array<{ role: 'user' | 'model'; parts: string }>) => Promise<string>;
+  askStudyAgent: (message: string) => Promise<any>;
   logStudySession: (hours: number, productivity: number) => Promise<void>;
   unlockBadge: (badgeName: string, type: string, description: string) => Promise<void>;
   markNotificationRead: (id: string) => Promise<void>;
@@ -152,9 +154,9 @@ export const StudyPlanProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const syncAllData = async () => {
+  const syncAllData = useCallback(async () => {
     if (!isAuthenticated) return;
-    setIsLoading(true);
+    Promise.resolve().then(() => setIsLoading(true));
     try {
       const [subs, exms, tsks, plans, logs, achs, notifs] = await Promise.all([
         apiFetch('/subjects'),
@@ -177,22 +179,24 @@ export const StudyPlanProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isAuthenticated, apiFetch]);
 
   // Trigger sync on login
   useEffect(() => {
-    if (isAuthenticated) {
-      syncAllData();
-    } else {
-      setSubjects([]);
-      setExams([]);
-      setTasks([]);
-      setStudyPlans([]);
-      setProgressLogs([]);
-      setAchievements([]);
-      setNotifications([]);
-    }
-  }, [isAuthenticated]);
+    Promise.resolve().then(() => {
+      if (isAuthenticated) {
+        syncAllData();
+      } else {
+        setSubjects([]);
+        setExams([]);
+        setTasks([]);
+        setStudyPlans([]);
+        setProgressLogs([]);
+        setAchievements([]);
+        setNotifications([]);
+      }
+    });
+  }, [isAuthenticated, syncAllData]);
 
   // ==================== SUBJECT METHODS ====================
   const fetchSubjects = async () => {
@@ -368,6 +372,15 @@ export const StudyPlanProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return res.reply;
   };
 
+  const askStudyAgent = async (message: string): Promise<any> => {
+    const res = await apiFetch('/agent/study', {
+      method: 'POST',
+      body: JSON.stringify({ message })
+    });
+    await syncAllData();
+    return res;
+  };
+
   const logStudySession = async (hours: number, productivity: number) => {
     await apiFetch('/progress/log', {
       method: 'POST',
@@ -399,7 +412,7 @@ export const StudyPlanProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       const updated = await apiFetch(`/notifications/${id}`, { method: 'PUT' });
       setNotifications(prev => prev.map(n => (n.id === id ? updated : n)));
-    } catch (err) {
+    } catch {
       // Direct optimistic update fallback if needed
       setNotifications(prev => prev.map(n => (n.id === id ? { ...n, read: true } : n)));
     }
@@ -461,6 +474,7 @@ export const StudyPlanProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         rescheduleMissedTasks,
         parseSyllabusPDF,
         sendChatMsg,
+        askStudyAgent,
         logStudySession,
         unlockBadge,
         markNotificationRead,

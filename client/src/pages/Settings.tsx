@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { PomodoroTimer } from '../components/timer/PomodoroTimer';
-import { Settings as SettingsIcon, Bell, Moon, Sun, Shield, HelpCircle, AlertCircle } from 'lucide-react';
+import { Settings as SettingsIcon, Bell, Moon, Sun, Shield, AlertCircle } from 'lucide-react';
 
 export const Settings: React.FC = () => {
   const { user, updateProfile } = useAuth();

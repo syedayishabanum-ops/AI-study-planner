@@ -1,54 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useStudyPlan } from '../context/StudyPlanContext';
 import { 
-  Zap, Calendar, BookOpen, Clock, Bot, Award, CheckSquare, 
-  Square, Flame, TrendingUp, Sparkles, Plus, AlertCircle, HelpCircle
+  Calendar, BookOpen, Clock, Bot, Award, CheckSquare, 
+  Square, Flame, TrendingUp, Sparkles, AlertCircle
 } from 'lucide-react';
+
+const getNowTime = () => Date.now();
+const getTodayString = () => new Date().toISOString().split('T')[0];
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { 
     subjects, exams, tasks, studyPlans, achievements, 
-    toggleTaskComplete, syncAllData, logStudySession,
+    toggleTaskComplete,
     getDashboardInsights, triggerAdaptiveSync
   } = useStudyPlan();
   
-  const navigate = useNavigate();
   const [insightsData, setInsightsData] = useState<any>(null);
-  const [isLoadingInsights, setIsLoadingInsights] = useState(true);
   const [isSyncingPlan, setIsSyncingPlan] = useState(false);
   const [hasMissedTasks, setHasMissedTasks] = useState(false);
   const [missedTasksCount, setMissedTasksCount] = useState(0);
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getTodayString();
 
-  const fetchInsights = async () => {
-    setIsLoadingInsights(true);
+  const fetchInsights = useCallback(async () => {
     try {
       const data = await getDashboardInsights();
       setInsightsData(data);
     } catch (err) {
       console.error("Failed to load dashboard insights:", err);
-    } finally {
-      setIsLoadingInsights(false);
     }
-  };
+  }, [getDashboardInsights]);
 
   useEffect(() => {
-    fetchInsights();
-    
-    // Check for missed tasks: pending tasks with due dates <= todayStr
-    const overdue = tasks.filter(t => t.status === 'pending' && t.due_date <= todayStr);
-    if (overdue.length > 0) {
-      setHasMissedTasks(true);
-      setMissedTasksCount(overdue.length);
-    } else {
-      setHasMissedTasks(false);
-      setMissedTasksCount(0);
-    }
-  }, [tasks, subjects]);
+    Promise.resolve().then(() => {
+      fetchInsights();
+      
+      // Check for missed tasks: pending tasks with due dates <= todayStr
+      const overdue = tasks.filter(t => t.status === 'pending' && t.due_date <= todayStr);
+      if (overdue.length > 0) {
+        setHasMissedTasks(true);
+        setMissedTasksCount(overdue.length);
+      } else {
+        setHasMissedTasks(false);
+        setMissedTasksCount(0);
+      }
+    });
+  }, [tasks, subjects, fetchInsights, todayStr]);
 
   const handleAdaptiveSync = async () => {
     setIsSyncingPlan(true);
@@ -77,7 +77,7 @@ export const Dashboard: React.FC = () => {
 
   // Math helper for exam count-downs
   const getDaysCountdown = (dateStr: string) => {
-    const diff = new Date(dateStr).getTime() - Date.now();
+    const diff = new Date(dateStr).getTime() - getNowTime();
     const days = Math.ceil(diff / (1000 * 3600 * 24));
     if (days < 0) return 'Passed';
     if (days === 0) return 'Today! 🚨';

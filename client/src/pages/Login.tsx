@@ -30,7 +30,7 @@ export const Login: React.FC = () => {
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab === 'signup' || tab === 'login') {
-      setActiveTab(tab);
+      Promise.resolve().then(() => setActiveTab(tab));
     }
   }, [searchParams]);
 

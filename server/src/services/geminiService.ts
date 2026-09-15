@@ -38,21 +38,24 @@ class GeminiService {
   private initAI() {
     if (this.ai) return;
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    console.log(`[Diagnostic] GEMINI_API_KEY loaded: ${!!apiKey}`);
+    const rawKey = process.env.GEMINI_API_KEY;
+    const apiKey = rawKey ? rawKey.trim() : '';
+    const isPlaceholder = !apiKey || apiKey.startsWith('your_') || apiKey === 'PLACEHOLDER';
 
-    if (apiKey) {
+    if (!isPlaceholder) {
       try {
         this.ai = new GoogleGenerativeAI(apiKey);
         this._isMock = false;
-        console.log('Gemini AI Client initialized successfully.');
+        console.log('[GeminiService] Live Gemini AI Client initialized successfully with GoogleGenerativeAI.');
       } catch (err) {
-        console.error('Failed to initialize Gemini Client. Falling back to Mock AI.', err);
+        console.error('[GeminiService] Failed to initialize Gemini Client. Falling back to Mock AI mode.', err);
         this._isMock = true;
+        this.ai = null;
       }
     } else {
-      console.log('Gemini API Key missing. Running in Mock AI fallback mode.');
+      console.log('[GeminiService] GEMINI_API_KEY is not set or empty in environment. Running in offline fallback mode.');
       this._isMock = true;
+      this.ai = null;
     }
   }
 
@@ -64,6 +67,12 @@ class GeminiService {
     this.initAI();
     return this.ai;
   }
+
+  hasApiKey(): boolean {
+    this.initAI();
+    return !this._isMock && this.ai !== null;
+  }
+
 
   // Helper to extract JSON block from markdown strings
   private extractJSON(text: string): any {

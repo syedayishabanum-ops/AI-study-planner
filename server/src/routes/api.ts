@@ -48,79 +48,51 @@ router.post('/auth/signup', async (req, res) => {
       return res.status(400).json({ error: 'Email already registered.' });
     }
 
+    const salt = await bcrypt.genSalt(10);
+    const password_hash = await bcrypt.hash(password, salt);
+
+    let explicitUserId: string | undefined = undefined;
+
+    // Optional: Also register user in Supabase Auth if Supabase is active
     if (!db.getIsLocal()) {
-      // 1. Sign up user via Supabase Auth
-      const { data: authData, error: authError } = await db.getSupabaseClient()!.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-          }
-        }
-      });
-
-      if (authError) {
-        return res.status(400).json({ error: authError.message });
-      }
-
-      if (!authData.user) {
-        return res.status(400).json({ error: 'Auth failed. No user object returned.' });
-      }
-
-      // Check if email confirmation is required (i.e. session is null)
-      const confirmationRequired = !authData.session;
-
-      // 2. Create the student's profile record using the user's authenticated UUID to prevent duplicates
-      let userProfile = await db.getUser(authData.user.id);
-      if (!userProfile) {
-        userProfile = await db.createUser({
+      try {
+        const { data: authData, error: authError } = await db.getSupabaseClient()!.auth.signUp({
           email,
-          full_name: fullName,
-          avatar_url: `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(fullName)}`,
-          settings: {
-            darkMode: true,
-            studyReminders: true,
-            examReminders: true,
-            breakReminders: true,
-            preferredHours: 4,
-          },
-        }, authData.user.id);
-      }
-
-      if (confirmationRequired) {
-        return res.status(200).json({
-          message: 'Registration successful! Please check your email to confirm your account.',
-          confirmationRequired: true
+          password,
+          options: {
+            data: {
+              full_name: fullName,
+            }
+          }
         });
+        if (!authError && authData?.user?.id) {
+          explicitUserId = authData.user.id;
+        }
+      } catch (e) {
+        console.warn('[Auth] Supabase GoTrue Auth signUp warning (fallback continuing):', e);
       }
-
-      const token = generateToken(userProfile.id);
-      res.status(201).json({ token, user: userProfile });
-    } else {
-      // Local fallback DB signup flow
-      const salt = await bcrypt.genSalt(10);
-      const password_hash = await bcrypt.hash(password, salt);
-
-      const user = await db.createUser({
-        email,
-        password_hash,
-        full_name: fullName,
-        avatar_url: `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(fullName)}`,
-        settings: {
-          darkMode: true,
-          studyReminders: true,
-          examReminders: true,
-          breakReminders: true,
-          preferredHours: 4,
-        },
-      });
-
-      const token = generateToken(user.id);
-      res.status(201).json({ token, user });
     }
+
+    // Always create student record in database table
+    const userProfile = await db.createUser({
+      email,
+      password_hash,
+      full_name: fullName,
+      avatar_url: `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(fullName)}`,
+      settings: {
+        darkMode: true,
+        studyReminders: true,
+        examReminders: true,
+        breakReminders: true,
+        preferredHours: 4,
+      },
+    }, explicitUserId);
+
+    const token = generateToken(userProfile.id);
+    res.status(201).json({ token, user: userProfile });
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    console.error('[Auth] Signup error:', err);
+    res.status(500).json({ error: err.message || 'Signup failed.' });
   }
 });
 
@@ -133,38 +105,13 @@ router.post('/auth/login', async (req, res) => {
   }
 
   try {
-    if (!db.getIsLocal()) {
-      // Authenticate via Supabase Auth
-      const { data: authData, error: authError } = await db.getSupabaseClient()!.auth.signInWithPassword({
-        email,
-        password,
-      });
+    // 1. First check if user exists in database table
+    let user = await db.getUserByEmail(email);
 
-      if (authError) {
-        return res.status(400).json({ error: authError.message });
-      }
-
-      if (!authData.user) {
-        return res.status(400).json({ error: 'Login failed.' });
-      }
-
-      // Fetch user profile from database using the authenticated UUID
-      let user = await db.getUser(authData.user.id);
-      if (!user) {
-        // Create user profile if it doesn't exist yet
-        user = await db.createUser({
-          email,
-          full_name: authData.user.user_metadata?.full_name || email.split('@')[0],
-          avatar_url: `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(authData.user.id)}`,
-          settings: {
-            darkMode: true,
-            studyReminders: true,
-            examReminders: true,
-            breakReminders: true,
-            preferredHours: 4,
-          },
-        }, authData.user.id);
-      } else {
+    // If user has a password_hash stored in database, check bcrypt
+    if (user && user.password_hash) {
+      const isMatch = await bcrypt.compare(password, user.password_hash);
+      if (isMatch) {
         // Daily streak logic
         const todayStr = new Date().toISOString().split('T')[0];
         let newStreak = user.streak || 1;
@@ -180,57 +127,85 @@ router.post('/auth/login', async (req, res) => {
             newStreak = 1;
           }
         }
-        user = await db.updateUser(user.id, {
+        const updatedUser = await db.updateUser(user.id, {
           streak: newStreak,
           last_active: todayStr,
         });
+
+        const token = generateToken(updatedUser.id);
+        return res.json({ token, user: updatedUser });
       }
-
-      const token = generateToken(user.id);
-      res.json({ token, user });
-    } else {
-      // Local fallback DB login flow
-      const user = await db.getUserByEmail(email);
-      if (!user || !user.password_hash) {
-        return res.status(400).json({ error: 'Invalid email or password.' });
-      }
-
-      const isMatch = await bcrypt.compare(password, user.password_hash);
-      if (!isMatch) {
-        return res.status(400).json({ error: 'Invalid email or password.' });
-      }
-
-      // Daily streak logic
-      const todayStr = new Date().toISOString().split('T')[0];
-      let newStreak = user.streak || 1;
-      if (user.last_active) {
-        const lastActiveDate = new Date(user.last_active);
-        const todayDate = new Date(todayStr);
-        const diffTime = Math.abs(todayDate.getTime() - lastActiveDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 1) {
-          newStreak += 1;
-        } else if (diffDays > 1) {
-          newStreak = 1;
-        }
-      }
-      const updatedUser = await db.updateUser(user.id, {
-        streak: newStreak,
-        last_active: todayStr,
-      });
-
-      const token = generateToken(user.id);
-      res.json({ token, user: updatedUser });
     }
+
+    // 2. If not matched by password_hash or user was created in Supabase Auth directly, try Supabase Auth
+    if (!db.getIsLocal()) {
+      try {
+        const { data: authData, error: authError } = await db.getSupabaseClient()!.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (!authError && authData.user) {
+          if (!user) {
+            user = await db.getUser(authData.user.id);
+          }
+
+          if (!user) {
+            const salt = await bcrypt.genSalt(10);
+            const password_hash = await bcrypt.hash(password, salt);
+            user = await db.createUser({
+              email,
+              password_hash,
+              full_name: authData.user.user_metadata?.full_name || email.split('@')[0],
+              avatar_url: `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(authData.user.id)}`,
+              settings: {
+                darkMode: true,
+                studyReminders: true,
+                examReminders: true,
+                breakReminders: true,
+                preferredHours: 4,
+              },
+            }, authData.user.id);
+          } else {
+            // Update streak
+            const todayStr = new Date().toISOString().split('T')[0];
+            let newStreak = user.streak || 1;
+            if (user.last_active) {
+              const lastActiveDate = new Date(user.last_active);
+              const todayDate = new Date(todayStr);
+              const diffTime = Math.abs(todayDate.getTime() - lastActiveDate.getTime());
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+              if (diffDays === 1) {
+                newStreak += 1;
+              } else if (diffDays > 1) {
+                newStreak = 1;
+              }
+            }
+            user = await db.updateUser(user.id, {
+              streak: newStreak,
+              last_active: todayStr,
+            });
+          }
+
+          const token = generateToken(user.id);
+          return res.json({ token, user });
+        }
+      } catch (authErr) {
+        console.warn('[Auth] Supabase auth.signInWithPassword notice:', authErr);
+      }
+    }
+
+    return res.status(400).json({ error: 'Invalid email or password.' });
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    console.error('[Auth] Login error:', err);
+    res.status(500).json({ error: err.message || 'Login failed.' });
   }
 });
 
 // Mock Google Auth
 router.post('/auth/google', async (req, res) => {
-  const { email, fullName, googleId, avatarUrl } = req.body;
+  const { email, fullName, avatarUrl } = req.body;
 
   if (!email || !fullName) {
     return res.status(400).json({ error: 'Email and name are required.' });
@@ -277,6 +252,7 @@ router.post('/auth/google', async (req, res) => {
     const token = generateToken(user.id);
     res.json({ token, user });
   } catch (err: any) {
+    console.error('[Auth] Google Auth error:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -545,9 +521,16 @@ router.post('/planner/generate', authenticateToken, async (req: AuthRequest, res
     const createdTasks: Task[] = [];
     for (const day of generated.schedule) {
       for (const slot of day.slots) {
+        // Ensure subject_id is a valid UUID matching one of the user's subjects
+        let targetSubjectId = slot.subjectId;
+        if (!targetSubjectId || !subjects.some(s => s.id === targetSubjectId)) {
+          const matched = subjects.find(s => s.name.toLowerCase() === (slot.subjectName || '').toLowerCase());
+          targetSubjectId = matched ? matched.id : subjects[0].id;
+        }
+
         const title = `${slot.type.toUpperCase()}: ${slot.subjectName} - ${slot.topic}`;
         const task = await db.addTask(req.userId!, {
-          subject_id: slot.subjectId || '',
+          subject_id: targetSubjectId,
           title,
           status: 'pending',
           due_date: day.date,

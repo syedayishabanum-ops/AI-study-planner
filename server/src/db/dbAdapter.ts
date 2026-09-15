@@ -1,7 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import ws from 'ws';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
+// Polyfill WebSocket for Node.js (< 22) runtime
+if (typeof (global as any).WebSocket === 'undefined') {
+  (global as any).WebSocket = ws;
+}
 
 // Setup types for Database Schema
 export interface User {
@@ -144,15 +150,20 @@ class DatabaseAdapter {
         if (!supabaseUrl.startsWith('http://') && !supabaseUrl.startsWith('https://')) {
           supabaseUrl = `https://${supabaseUrl}.supabase.co`;
         }
-        this.supabase = createClient(supabaseUrl, supabaseKey);
+        this.supabase = createClient(supabaseUrl, supabaseKey, {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+          },
+        });
         this.isLocal = false;
-        console.log('Successfully initialized Supabase connection.');
+        console.log(`[DatabaseAdapter] Successfully connected to Supabase at: ${supabaseUrl}`);
       } catch (err) {
-        console.error('Failed to connect to Supabase. Falling back to local database.', err);
+        console.error('[DatabaseAdapter] Failed to connect to Supabase. Falling back to local database.', err);
         this.isLocal = true;
       }
     } else {
-      console.log('Supabase credentials missing. Running database in local JSON fallback mode.');
+      console.log('[DatabaseAdapter] Supabase credentials missing. Running database in local JSON fallback mode.');
       this.isLocal = true;
     }
 
@@ -178,7 +189,7 @@ class DatabaseAdapter {
       const data = fs.readFileSync(LOCAL_DB_PATH, 'utf-8');
       return JSON.parse(data);
     } catch (err) {
-      console.error('Error reading local JSON database, returning empty schemas.', err);
+      console.error('[DatabaseAdapter] Error reading local JSON database, returning empty schemas.', err);
       return {
         users: [],
         subjects: [],
@@ -202,7 +213,7 @@ class DatabaseAdapter {
       }
       fs.writeFileSync(LOCAL_DB_PATH, JSON.stringify(db, null, 2), 'utf-8');
     } catch (err) {
-      console.error('Error writing to local JSON database.', err);
+      console.error('[DatabaseAdapter] Error writing to local JSON database.', err);
     }
   }
 
@@ -238,8 +249,11 @@ class DatabaseAdapter {
         .from('users')
         .select('*')
         .eq('id', id)
-        .single();
-      if (error) return null;
+        .maybeSingle();
+      if (error) {
+        console.error('[DatabaseAdapter] getUser error from Supabase:', error);
+        return null;
+      }
       return data;
     }
   }
@@ -253,8 +267,11 @@ class DatabaseAdapter {
         .from('users')
         .select('*')
         .eq('email', email)
-        .single();
-      if (error) return null;
+        .maybeSingle();
+      if (error) {
+        console.error('[DatabaseAdapter] getUserByEmail error from Supabase:', error);
+        return null;
+      }
       return data;
     }
   }
@@ -279,10 +296,13 @@ class DatabaseAdapter {
     } else {
       const { data, error } = await this.supabase!
         .from('users')
-        .insert([newUser])
+        .upsert([newUser], { onConflict: 'id' })
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] createUser error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -302,7 +322,10 @@ class DatabaseAdapter {
         .eq('id', id)
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] updateUser error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -317,11 +340,12 @@ class DatabaseAdapter {
         .from('subjects')
         .select('*')
         .eq('user_id', userId);
-      if (error) return [];
+      if (error) {
+        console.error('[DatabaseAdapter] getSubjects error from Supabase:', error);
+        return [];
+      }
       
-      // Map columns from Supabase subjects table, injecting fallback defaults for columns 
-      // like credits/priority that are not stored in Supabase subjects table.
-      return data.map(sub => ({
+      return (data || []).map(sub => ({
         ...sub,
         credits: sub.credits !== undefined ? sub.credits : 3,
         priority: sub.priority !== undefined ? sub.priority : 'medium',
@@ -334,6 +358,8 @@ class DatabaseAdapter {
       ...subject,
       id: crypto.randomUUID(),
       user_id: userId,
+      credits: subject.credits || 3,
+      priority: subject.priority || 'medium',
     };
 
     if (this.isLocal) {
@@ -342,24 +368,16 @@ class DatabaseAdapter {
       this.saveLocalDB(db);
       return newSubject;
     } else {
-      // Filter payload to only include columns in the Supabase subjects table:
-      // id, user_id, name, color, difficulty_level
-      const supabasePayload = {
-        id: newSubject.id,
-        user_id: newSubject.user_id,
-        name: newSubject.name,
-        color: newSubject.color,
-        difficulty_level: newSubject.difficulty_level,
-      };
-
       const { data, error } = await this.supabase!
         .from('subjects')
-        .insert([supabasePayload])
+        .insert([newSubject])
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] addSubject error from Supabase:', error);
+        throw new Error(error.message);
+      }
       
-      // Return a complete Subject object matching the UI types
       return {
         ...newSubject,
         ...data,
@@ -376,20 +394,17 @@ class DatabaseAdapter {
       this.saveLocalDB(db);
       return db.subjects[idx];
     } else {
-      // Only updates name, color, or difficulty_level in the Supabase subjects table
-      const supabaseUpdates: any = {};
-      if (updates.name !== undefined) supabaseUpdates.name = updates.name;
-      if (updates.color !== undefined) supabaseUpdates.color = updates.color;
-      if (updates.difficulty_level !== undefined) supabaseUpdates.difficulty_level = updates.difficulty_level;
-
       const { data, error } = await this.supabase!
         .from('subjects')
-        .update(supabaseUpdates)
+        .update(updates)
         .eq('id', subjectId)
         .eq('user_id', userId)
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] updateSubject error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -398,7 +413,6 @@ class DatabaseAdapter {
     if (this.isLocal) {
       const db = this.getLocalDB();
       db.subjects = db.subjects.filter(s => !(s.id === subjectId && s.user_id === userId));
-      // Cascade delete units, exams and tasks
       db.units = db.units.filter(u => u.subject_id !== subjectId);
       db.exams = db.exams.filter(e => e.subject_id !== subjectId);
       db.tasks = db.tasks.filter(t => t.subject_id !== subjectId);
@@ -409,7 +423,10 @@ class DatabaseAdapter {
         .delete()
         .eq('id', subjectId)
         .eq('user_id', userId);
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] deleteSubject error from Supabase:', error);
+        throw new Error(error.message);
+      }
     }
   }
 
@@ -423,8 +440,11 @@ class DatabaseAdapter {
         .from('units')
         .select('*')
         .eq('subject_id', subjectId);
-      if (error) return [];
-      return data;
+      if (error) {
+        console.error('[DatabaseAdapter] getUnits error from Supabase:', error);
+        return [];
+      }
+      return data || [];
     }
   }
 
@@ -447,7 +467,10 @@ class DatabaseAdapter {
         .insert([newUnit])
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] addUnit error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -468,7 +491,10 @@ class DatabaseAdapter {
         .eq('subject_id', subjectId)
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] updateUnit error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -484,7 +510,10 @@ class DatabaseAdapter {
         .delete()
         .eq('id', unitId)
         .eq('subject_id', subjectId);
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] deleteUnit error from Supabase:', error);
+        throw new Error(error.message);
+      }
     }
   }
 
@@ -498,8 +527,11 @@ class DatabaseAdapter {
         .from('exams')
         .select('*')
         .eq('user_id', userId);
-      if (error) return [];
-      return data;
+      if (error) {
+        console.error('[DatabaseAdapter] getExams error from Supabase:', error);
+        return [];
+      }
+      return data || [];
     }
   }
 
@@ -521,7 +553,10 @@ class DatabaseAdapter {
         .insert([newExam])
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] addExam error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -542,7 +577,10 @@ class DatabaseAdapter {
         .eq('user_id', userId)
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] updateExam error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -558,7 +596,10 @@ class DatabaseAdapter {
         .delete()
         .eq('id', examId)
         .eq('user_id', userId);
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] deleteExam error from Supabase:', error);
+        throw new Error(error.message);
+      }
     }
   }
 
@@ -572,8 +613,11 @@ class DatabaseAdapter {
         .from('tasks')
         .select('*')
         .eq('user_id', userId);
-      if (error) return [];
-      return data;
+      if (error) {
+        console.error('[DatabaseAdapter] getTasks error from Supabase:', error);
+        return [];
+      }
+      return data || [];
     }
   }
 
@@ -595,7 +639,10 @@ class DatabaseAdapter {
         .insert([newTask])
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] addTask error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -616,7 +663,10 @@ class DatabaseAdapter {
         .eq('user_id', userId)
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] updateTask error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -632,7 +682,10 @@ class DatabaseAdapter {
         .delete()
         .eq('id', taskId)
         .eq('user_id', userId);
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] deleteTask error from Supabase:', error);
+        throw new Error(error.message);
+      }
     }
   }
 
@@ -646,8 +699,11 @@ class DatabaseAdapter {
         .from('study_plans')
         .select('*')
         .eq('user_id', userId);
-      if (error) return [];
-      return data;
+      if (error) {
+        console.error('[DatabaseAdapter] getStudyPlans error from Supabase:', error);
+        return [];
+      }
+      return data || [];
     }
   }
 
@@ -669,7 +725,10 @@ class DatabaseAdapter {
         .insert([newPlan])
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] addStudyPlan error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -684,8 +743,11 @@ class DatabaseAdapter {
         .from('progress')
         .select('*')
         .eq('user_id', userId);
-      if (error) return [];
-      return data;
+      if (error) {
+        console.error('[DatabaseAdapter] getProgressLogs error from Supabase:', error);
+        return [];
+      }
+      return data || [];
     }
   }
 
@@ -700,7 +762,7 @@ class DatabaseAdapter {
           date,
           study_hours: 0,
           tasks_completed: 0,
-          productivity_score: 80, // Default productivity baseline
+          productivity_score: 80,
         };
         db.progress.push(log);
       }
@@ -711,7 +773,6 @@ class DatabaseAdapter {
       this.saveLocalDB(db);
       return log;
     } else {
-      // Supabase upsert logic or separate select and insert/update
       const { data: existing } = await this.supabase!
         .from('progress')
         .select('*')
@@ -731,7 +792,10 @@ class DatabaseAdapter {
           .eq('id', existing.id)
           .select()
           .single();
-        if (error) throw new Error(error.message);
+        if (error) {
+          console.error('[DatabaseAdapter] update progress error from Supabase:', error);
+          throw new Error(error.message);
+        }
         return data;
       } else {
         const payload = {
@@ -747,7 +811,10 @@ class DatabaseAdapter {
           .insert([payload])
           .select()
           .single();
-        if (error) throw new Error(error.message);
+        if (error) {
+          console.error('[DatabaseAdapter] insert progress error from Supabase:', error);
+          throw new Error(error.message);
+        }
         return data;
       }
     }
@@ -763,8 +830,11 @@ class DatabaseAdapter {
         .from('achievements')
         .select('*')
         .eq('user_id', userId);
-      if (error) return [];
-      return data;
+      if (error) {
+        console.error('[DatabaseAdapter] getAchievements error from Supabase:', error);
+        return [];
+      }
+      return data || [];
     }
   }
 
@@ -809,7 +879,10 @@ class DatabaseAdapter {
         .insert([newBadge])
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] unlockAchievement error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -825,8 +898,11 @@ class DatabaseAdapter {
         .select('*')
         .eq('user_id', userId)
         .order('scheduled_for', { ascending: false });
-      if (error) return [];
-      return data;
+      if (error) {
+        console.error('[DatabaseAdapter] getNotifications error from Supabase:', error);
+        return [];
+      }
+      return data || [];
     }
   }
 
@@ -849,7 +925,10 @@ class DatabaseAdapter {
         .insert([newNotif])
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] addNotification error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }
@@ -870,7 +949,10 @@ class DatabaseAdapter {
         .eq('user_id', userId)
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error('[DatabaseAdapter] markNotificationRead error from Supabase:', error);
+        throw new Error(error.message);
+      }
       return data;
     }
   }

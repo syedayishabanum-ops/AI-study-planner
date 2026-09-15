@@ -24,25 +24,113 @@ class AIAgentService {
     console.log('AIAgentService initialized.');
   }
 
-  // Helper to extract JSON block from markdown strings
+  // Robust helper to extract JSON block from model responses
   private extractJSON(text: string): any {
     try {
-      const regex = /```json\s*([\s\S]*?)\s*```/;
+      const regex = /```(?:json)?\s*([\s\S]*?)\s*```/;
       const match = text.match(regex);
       const jsonStr = match ? match[1] : text;
       return JSON.parse(jsonStr.trim());
     } catch (err) {
-      console.error('Failed to parse JSON from Agent response. Raw response:', text);
-      throw new Error('AI Agent response was not in valid JSON format.');
+      try {
+        const firstOpen = text.indexOf('{');
+        const lastClose = text.lastIndexOf('}');
+        if (firstOpen !== -1 && lastClose > firstOpen) {
+          return JSON.parse(text.substring(firstOpen, lastClose + 1));
+        }
+      } catch (nestedErr) {
+        // ignore and fallback
+      }
+      return {
+        success: true,
+        message: text,
+        action: 'general_advice',
+        recommendations: [],
+        reasoning: 'Direct response generated from AI agent.'
+      };
     }
+  }
+
+  // Offline fallback when GEMINI_API_KEY is not configured
+  private async handleOfflineAgentRequest(userId: string, message: string): Promise<AIAgentResponse> {
+    const subjects = await db.getSubjects(userId);
+    const exams = await db.getExams(userId);
+    const tasks = await db.getTasks(userId);
+    const logs = await db.getProgressLogs(userId);
+
+    const pendingTasks = tasks.filter(t => t.status === 'pending');
+    const weakSubjects = subjects.filter(s => s.difficulty_level === 'hard' || s.priority === 'high');
+    const upcomingExams = exams.sort((a, b) => new Date(a.exam_date).getTime() - new Date(b.exam_date).getTime());
+
+    const stepsLog = [
+      'Checked API key status: GEMINI_API_KEY is not configured in .env',
+      'Operating in Offline Diagnostic Mode',
+      `Loaded ${subjects.length} subjects, ${exams.length} exams, ${tasks.length} checklist items from local database`,
+      'Synthesized intelligent recommendations based on active student records'
+    ];
+
+    const recommendations: AIAgentResponse['recommendations'] = [];
+
+    if (weakSubjects.length > 0) {
+      const primaryWeak = weakSubjects[0];
+      recommendations.push({
+        type: 'weakness_review',
+        title: `Focus on ${primaryWeak.name}`,
+        priority: 'high',
+        description: `This subject is marked as high difficulty. Allocate a 45-minute active recall session today.`,
+        subjectId: primaryWeak.id
+      });
+    }
+
+    if (upcomingExams.length > 0) {
+      const nextExam = upcomingExams[0];
+      recommendations.push({
+        type: 'exam_prep',
+        title: `Prepare for ${nextExam.name}`,
+        priority: 'high',
+        description: `Exam is scheduled for ${nextExam.exam_date}. Review core formula sheets and past papers.`,
+        subjectId: nextExam.subject_id
+      });
+    }
+
+    if (pendingTasks.length > 0) {
+      const firstTask = pendingTasks[0];
+      recommendations.push({
+        type: 'task_checklist',
+        title: `Pending: ${firstTask.title}`,
+        priority: 'medium',
+        description: `Due on ${firstTask.due_date}. Finish this to maintain your study streak!`
+      });
+    }
+
+    const noticeBanner = `💡 **Note: Running in Offline Mode (GEMINI_API_KEY not configured)**\n\nTo activate live autonomous Gemini AI reasoning with real-time tool execution:\n1. Get a free Gemini API key from **Google AI Studio** (https://aistudio.google.com/).\n2. Open your project \`.env\` file and set: \`GEMINI_API_KEY=your_key_here\`\n3. Restart your server.\n\n---\n\n`;
+
+    let adviceNarrative = `Hello! Based on your current records, you have **${subjects.length} enrolled subjects**, **${pendingTasks.length} pending tasks**, and **${upcomingExams.length} upcoming exams**.\n\n`;
+
+    if (weakSubjects.length > 0) {
+      adviceNarrative += `🎯 **Priority Focus**: I recommend dedicating your next study sprint to **${weakSubjects.map(s => s.name).join(', ')}** to boost your mastery.\n`;
+    }
+    if (upcomingExams.length > 0) {
+      adviceNarrative += `📅 **Upcoming Deadline**: Your nearest exam is **${upcomingExams[0].name}** on **${upcomingExams[0].exam_date}**.\n`;
+    }
+
+    return {
+      success: true,
+      message: `${noticeBanner}${adviceNarrative}`,
+      action: 'offline_diagnostics',
+      recommendations,
+      reasoning: 'Synthesized diagnostic recommendations using local student database records because GEMINI_API_KEY is omitted.',
+      steps: stepsLog
+    };
   }
 
   // Main entrypoint for processing student queries
   async processRequest(userId: string, message: string): Promise<AIAgentResponse> {
     const aiClient = gemini.getAIClient();
     if (!aiClient) {
-      throw new Error('Gemini API Client is not initialized. Please verify GEMINI_API_KEY environment variable.');
+      return this.handleOfflineAgentRequest(userId, message);
     }
+
 
     const stepsLog: string[] = [];
     const recommendationsAcc: AIAgentResponse['recommendations'] = [];
@@ -311,8 +399,14 @@ DO NOT return any other text outside the JSON code block.
                   // Add related tasks to DB
                   for (const day of generated.schedule) {
                     for (const slot of day.slots) {
+                      let targetSubjectId = slot.subjectId;
+                      if (!targetSubjectId || !subjects.some(s => s.id === targetSubjectId)) {
+                        const matched = subjects.find(s => s.name.toLowerCase() === (slot.subjectName || '').toLowerCase());
+                        targetSubjectId = matched ? matched.id : subjects[0].id;
+                      }
+
                       await db.addTask(userId, {
-                        subject_id: slot.subjectId || '',
+                        subject_id: targetSubjectId,
                         title: `${slot.type.toUpperCase()}: ${slot.subjectName} - ${slot.topic}`,
                         status: 'pending',
                         due_date: day.date,

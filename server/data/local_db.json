@@ -48,7 +48,7 @@
       "id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac",
       "xp": 0,
       "streak": 1,
-      "last_active": "2026-08-31"
+      "last_active": "2026-09-08"
     },
     {
       "email": "test_student_ai@example.com",
@@ -100,6 +100,22 @@
       "xp": 0,
       "streak": 1,
       "last_active": "2026-08-27"
+    },
+    {
+      "email": "test_1788858736653@example.com",
+      "full_name": "Test Student Supabase",
+      "avatar_url": "https://api.dicebear.com/7.x/adventurer/svg?seed=test",
+      "settings": {
+        "darkMode": true,
+        "studyReminders": true,
+        "examReminders": true,
+        "breakReminders": true,
+        "preferredHours": 4
+      },
+      "id": "611b3ff0-35a1-4868-898e-d916f6dcecd0",
+      "xp": 0,
+      "streak": 1,
+      "last_active": "2026-09-08"
     }
   ],
   "subjects": [
@@ -150,6 +166,16 @@
       "current_grade": 55,
       "id": "a07b954d-9328-4a50-a639-4c48ea50fa64",
       "user_id": "f106d335-5801-4afc-9f61-4c407d3f75d2"
+    },
+    {
+      "name": "Computer Science 101",
+      "color": "#6366f1",
+      "difficulty_level": "medium",
+      "credits": 4,
+      "priority": "high",
+      "current_grade": 85,
+      "id": "bbd2f3f2-750a-4c19-92ad-bdd270cb3ef1",
+      "user_id": "611b3ff0-35a1-4868-898e-d916f6dcecd0"
     }
   ],
   "units": [],
@@ -335,9 +361,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: english - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: english - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-08-15",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -347,9 +373,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: english - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: english - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-08-16",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -359,9 +385,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: english - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: english - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-08-17",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -371,9 +397,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: english - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: english - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-08-18",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -383,9 +409,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: english - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: english - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-08-19",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -395,9 +421,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: english - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: english - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-08-20",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -407,9 +433,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: english - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: english - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-08-21",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -419,9 +445,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: english - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: english - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-08-22",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -467,9 +493,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: english - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: english - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-08-27",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -479,9 +505,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: english - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: english - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-08-28",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -491,9 +517,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: english - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: english - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-08-29",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -503,9 +529,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: english - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: english - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-08-30",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -515,9 +541,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: english - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: english - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-08-31",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -527,9 +553,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: english - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: english - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-09-01",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -539,9 +565,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: english - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: english - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-09-02",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -551,9 +577,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: english - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: english - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-09-03",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -563,9 +589,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: computer network - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-08-31",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -575,9 +601,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: computer network - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-09-01",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -587,9 +613,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: computer network - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-09-02",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -599,9 +625,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: computer network - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-09-03",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -611,9 +637,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: computer network - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-09-04",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -623,9 +649,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: computer network - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-09-05",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
@@ -635,9 +661,9 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "title": "Rescheduled: REVISION: computer network - Spaced Repetition: Active review of previous chapters",
       "status": "pending",
-      "due_date": "2026-09-06",
+      "due_date": "2026-09-09",
       "type": "revision",
       "priority": "medium",
       "duration_minutes": 120,
@@ -647,15 +673,219 @@
     },
     {
       "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
-      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "title": "Rescheduled: STUDY: computer network - Unit review and syllabus checklist practice",
       "status": "pending",
-      "due_date": "2026-09-07",
+      "due_date": "2026-09-09",
       "type": "study",
       "priority": "medium",
       "duration_minutes": 120,
       "recurring": false,
       "id": "14e381bc-04c9-431e-9141-bea46ff0d517",
       "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "Rescheduled: REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-09-09",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "04e54863-cb79-4364-8875-84c86db545a7",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-09-09",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "ca60e56d-67ea-4895-b5d4-f2955c29837e",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-09-10",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "a0a05f9f-af10-4088-9c27-554dbb16816c",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-09-11",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "2a28bdd6-86f0-40c7-b1e8-26f135adecd9",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-09-12",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "307a7bfc-50db-471e-ac1d-7da63a11c627",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-09-13",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "e2d88e21-3944-48ac-861f-ab78f8165f16",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-09-14",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "29155bdf-f7cb-4195-a8c9-ca640b0ca755",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-09-15",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "1476ec36-640f-443c-845b-ae79cdb53ba9",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-09-08",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "be0a5821-6e2e-4dd2-b230-d56f7fbdf340",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-09-09",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "e38ee56f-82fc-4d4c-9940-91f2765dc8ed",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-09-10",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "2b566ede-cd12-4431-9439-31bc4bca3123",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-09-11",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "0cfaa76a-9ab3-4ebe-9597-71f04f4943a3",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-09-12",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "f6ebb5a2-6349-43d9-856a-76a36c133dfd",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-09-13",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "ceb857ac-35ed-4798-963c-dceffa1ac1c1",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+      "status": "pending",
+      "due_date": "2026-09-14",
+      "type": "revision",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "98e3666a-f21a-4861-ad46-a4b1093df639",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+      "title": "STUDY: computer network - Unit review and syllabus checklist practice",
+      "status": "pending",
+      "due_date": "2026-09-15",
+      "type": "study",
+      "priority": "medium",
+      "duration_minutes": 120,
+      "recurring": false,
+      "id": "d40007a8-a28a-40fe-bb44-118af1317328",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "subject_id": "bbd2f3f2-750a-4c19-92ad-bdd270cb3ef1",
+      "title": "STUDY: Computer Science 101 - Data Structures",
+      "status": "pending",
+      "due_date": "2026-09-08",
+      "type": "study",
+      "priority": "high",
+      "duration_minutes": 60,
+      "recurring": false,
+      "id": "623c201c-a30f-4412-8ad9-ccf7a4876c90",
+      "user_id": "611b3ff0-35a1-4868-898e-d916f6dcecd0"
     }
   ],
   "studyPlans": [
@@ -1317,6 +1547,303 @@
       ],
       "id": "853a7565-2718-4e82-a449-f33c1d56e779",
       "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "start_date": "2026-09-08",
+      "end_date": "2026-09-15",
+      "config": {
+        "dailyHours": 4,
+        "weakSubjects": [],
+        "preferredStudyTime": "afternoon",
+        "breakDuration": 10
+      },
+      "schedule": [
+        {
+          "date": "2026-09-08",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "Rescheduled: STUDY: computer network - Unit review and syllabus checklist practice",
+              "color": "#ef4444",
+              "topic": "Missed Review: STUDY: computer network - Unit review and syllabus checklist practice (AI Shifted)",
+              "duration": 120,
+              "type": "study"
+            },
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "Rescheduled: REVISION: computer network - Spaced Repetition: Active review of previous chapters",
+              "color": "#ef4444",
+              "topic": "Missed Review: REVISION: computer network - Spaced Repetition: Active review of previous chapters (AI Shifted)",
+              "duration": 120,
+              "type": "study"
+            },
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "Rescheduled: STUDY: english - Unit review and syllabus checklist practice",
+              "color": "#ef4444",
+              "topic": "Missed Review: STUDY: english - Unit review and syllabus checklist practice (AI Shifted)",
+              "duration": 120,
+              "type": "study"
+            },
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "Rescheduled: REVISION: english - Spaced Repetition: Active review of previous chapters",
+              "color": "#ef4444",
+              "topic": "Missed Review: REVISION: english - Spaced Repetition: Active review of previous chapters (AI Shifted)",
+              "duration": 120,
+              "type": "study"
+            },
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-09",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-10",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-11",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-12",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-13",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-14",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-15",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        }
+      ],
+      "id": "cb2c408c-9d8b-42f6-99bc-6e6c33ea4856",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "start_date": "2026-09-08",
+      "end_date": "2026-09-15",
+      "config": {
+        "dailyHours": 4,
+        "weakSubjects": [],
+        "preferredStudyTime": "afternoon",
+        "breakDuration": 10
+      },
+      "schedule": [
+        {
+          "date": "2026-09-08",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-09",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-10",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-11",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-12",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-13",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-14",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Spaced Repetition: Active review of previous chapters",
+              "duration": 120,
+              "type": "revision"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-15",
+          "slots": [
+            {
+              "subjectId": "00c46b6e-f373-4343-a92a-17bfcd6c693e",
+              "subjectName": "computer network",
+              "color": "#ec4899",
+              "topic": "Unit review and syllabus checklist practice",
+              "duration": 120,
+              "type": "study"
+            }
+          ]
+        }
+      ],
+      "id": "6a62cf09-2d78-4cc7-b9a9-56382393a082",
+      "user_id": "15ffd2f3-d372-4f85-a478-7cf608f7e3ac"
+    },
+    {
+      "start_date": "2026-09-08",
+      "end_date": "2026-09-15",
+      "config": {
+        "dailyHours": 4,
+        "weakSubjects": [
+          "Computer Science 101"
+        ],
+        "preferredStudyTime": "morning",
+        "breakDuration": 10
+      },
+      "schedule": [
+        {
+          "date": "2026-09-08",
+          "slots": [
+            {
+              "subjectId": "bbd2f3f2-750a-4c19-92ad-bdd270cb3ef1",
+              "subjectName": "Computer Science 101",
+              "color": "#6366f1",
+              "topic": "Data Structures & Algorithms",
+              "duration": 60,
+              "type": "study"
+            }
+          ]
+        }
+      ],
+      "id": "6d2a8281-25b8-4d45-8d5d-c5ea6dd6723e",
+      "user_id": "611b3ff0-35a1-4868-898e-d916f6dcecd0"
     }
   ],
   "progress": [],

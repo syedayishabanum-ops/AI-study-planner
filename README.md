@@ -1,65 +1,133 @@
-# Aegis AI Study Planner 🎓✨
+# 📚 Planora AI – AI-Powered Study Planner
 
-A modern, full-stack, AI-powered Study Planner web application tailored for college students. Aegis helps students organize course syllabi, log exams, schedule study hours, track habits with Pomodoro sprints, review analytics, and request academic support via a Gemini AI chatbot.
+Planora AI is a full-stack, AI-powered study planning web application designed to help college students organize their studies, manage subjects and syllabi, create personalized study plans, track academic performance, and improve productivity.
 
-## 🚀 Key Features
-
-*   **Optimized AI Timetables**: Generates personalized daily and weekly study blocks based on credits, exam proximity, and student weaknesses.
-*   **PDF Syllabus Extraction**: Upload syllabus PDF documents, and Aegis parses and loads unit checklists automatically.
-*   **Active Recall Chatbot**: Chat with **Aegis** to explain hard topics, suggest study techniques (Feynman, Spaced Repetition), or generate custom quizzes.
-*   **Gamified Pomodoro Focus**: 25/5 and 50/10 focus intervals. Earn XP, level up, and unlock performance badges.
-*   **Interactive Calendar Grid**: Drag-and-drop study sessions to adapt schedules, with quick AI rescheduling for overdue checklist items.
-*   **Rich Analytics**: Visually review effort distributions, hours studied, and productivity trends using custom graphs.
-*   **Frosted Glassmorphism UI**: Beautiful premium styling with dark/light mode toggle support.
+The application uses AI to provide personalized study guidance based on the student's academic information, available study time, exams, and learning needs.
 
 ---
 
-## 🛠️ Stack & Architecture
+## 🎯 Problem Statement
 
-*   **Frontend**: React, TypeScript, Tailwind CSS v4, Vite, Recharts, FullCalendar
-*   **Backend**: Node.js, Express, TypeScript, `pdf-parse`
-*   **Database**: Supabase Client (automatically falls back to a **local JSON database engine** if credentials are omitted)
-*   **AI Engine**: Gemini Pro API (automatically falls back to **simulated mock responses** if keys are omitted)
+College students often struggle with:
 
----
+- Managing multiple subjects and syllabi
+- Creating effective study schedules
+- Preparing for upcoming examinations
+- Tracking their academic progress
+- Maintaining consistent study habits
+- Identifying topics that need more attention
 
-## ⚙️ Setup & Installation
-
-### 1. Prerequisites
-Ensure you have **Node.js** (v18+) and **npm** installed.
-
-### 2. Configure Environments
-Create a `.env` file in the project root directory (a pre-configured template is already generated for you).
-
-```env
-PORT=5000
-JWT_SECRET=super_secret_ai_study_planner_key_12345
-
-# Optional: Supabase Credentials (If empty, uses local JSON fallback)
-SUPABASE_URL=
-SUPABASE_KEY=
-
-# Optional: Gemini API Key (If empty, uses simulated AI tutor fallback)
-GEMINI_API_KEY=
-```
-
-### 3. Install Dependencies
-Run the workspace installer in the root folder:
-```bash
-npm run install:all
-```
-
-### 4. Run Development Servers
-Start both the React client dev server and Express backend concurrently:
-```bash
-npm run dev
-```
-*   Frontend: [http://localhost:5173](http://localhost:5173)
-*   Backend API: [http://localhost:5000](http://localhost:5000)
+Planora AI addresses these challenges by providing an intelligent and personalized study planning system.
 
 ---
 
-## 💎 Offline / Fallback Resiliency
-Aegis runs instantly out-of-the-box:
-1.  **JSON Database**: Stored locally in `server/data/local_db.json`. Real database updates, cascading subject deletions, and session logging persist across restarts.
-2.  **Mock AI Advisor**: Simulates prompt schedule outputs, syllabus extractions, spaced repetition advice, and quiz generation if no `GEMINI_API_KEY` is present.
+## 💡 Solution
+
+Planora AI allows students to enter their academic details and study requirements. The system processes this information and helps generate personalized study plans.
+
+The application combines a modern web interface, backend services, database management, and AI capabilities to provide an integrated study management experience.
+
+---
+
+## ✨ Key Features
+
+### 🤖 AI-Powered Study Planning
+- Generates personalized study plans
+- Considers subjects, syllabus, exams, and available study time
+- Provides AI-based study recommendations
+
+### 📖 Subject & Syllabus Management
+- Add and manage subjects
+- Organize syllabus information
+- Track learning progress
+
+### 📅 Study Schedule
+- Plan daily and weekly study sessions
+- Organize study activities efficiently
+- Manage upcoming academic tasks
+
+### 💬 AI Study Assistant
+- Provides academic guidance
+- Helps explain difficult concepts
+- Suggests effective study techniques
+
+### 📊 Performance Tracking
+- Record academic performance
+- Monitor study progress
+- Analyze learning activities
+
+### ⏱️ Productivity Support
+- Pomodoro-based study sessions
+- Helps students maintain focused study periods
+- Supports consistent study habits
+
+---
+
+## 🧠 How AI Helps
+
+Planora AI uses Artificial Intelligence to:
+
+- Generate personalized study plans
+- Analyze student-provided academic information
+- Recommend suitable study strategies
+- Provide learning assistance through AI interaction
+- Adapt study recommendations according to student requirements
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+- HTML
+- CSS
+- JavaScript
+- React
+
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- Supabase
+- PostgreSQL
+
+### AI
+- Google Gemini API
+
+### Development Tools
+- Visual Studio Code
+- Git
+- GitHub
+- Antigravity
+
+---
+
+## 🗄️ Database
+
+The application uses **Supabase** as the backend database platform.
+
+The database stores information related to:
+
+- Student details
+- Subjects
+- Academic performance
+- Study plans
+- Syllabus information
+
+---
+
+## 🏗️ Project Structure
+
+```text
+AI-study-planner/
+│
+├── client/              # Frontend application
+│
+├── server/              # Backend application
+│
+├── .env.example         # Environment variable template
+├── .gitignore           # Git ignored files
+├── package.json         # Project configuration
+├── package-lock.json    # Dependency lock file
+├── supabase_schema.sql  # Database schema
+└── README.md            # Project documentation

@@ -241,38 +241,52 @@ class DatabaseAdapter {
 
   // ==================== USER OPERATIONS ====================
   async getUser(id: string): Promise<User | null> {
-    if (this.isLocal) {
+    if (this.isLocal || !this.supabase) {
       const db = this.getLocalDB();
       return db.users.find(u => u.id === id) || null;
     } else {
-      const { data, error } = await this.supabase!
-        .from('users')
-        .select('*')
-        .eq('id', id)
-        .maybeSingle();
-      if (error) {
-        console.error('[DatabaseAdapter] getUser error from Supabase:', error);
-        return null;
+      try {
+        const { data, error } = await this.supabase
+          .from('users')
+          .select('*')
+          .eq('id', id)
+          .maybeSingle();
+        if (error) {
+          console.warn('[DatabaseAdapter] getUser error from Supabase, falling back to local DB:', error.message);
+          const db = this.getLocalDB();
+          return db.users.find(u => u.id === id) || null;
+        }
+        return data;
+      } catch (err) {
+        console.warn('[DatabaseAdapter] getUser exception from Supabase, falling back to local DB:', err);
+        const db = this.getLocalDB();
+        return db.users.find(u => u.id === id) || null;
       }
-      return data;
     }
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
-    if (this.isLocal) {
+    if (this.isLocal || !this.supabase) {
       const db = this.getLocalDB();
       return db.users.find(u => u.email.toLowerCase() === email.toLowerCase()) || null;
     } else {
-      const { data, error } = await this.supabase!
-        .from('users')
-        .select('*')
-        .eq('email', email)
-        .maybeSingle();
-      if (error) {
-        console.error('[DatabaseAdapter] getUserByEmail error from Supabase:', error);
-        return null;
+      try {
+        const { data, error } = await this.supabase
+          .from('users')
+          .select('*')
+          .eq('email', email)
+          .maybeSingle();
+        if (error) {
+          console.warn('[DatabaseAdapter] getUserByEmail error from Supabase, falling back to local DB:', error.message);
+          const db = this.getLocalDB();
+          return db.users.find(u => u.email.toLowerCase() === email.toLowerCase()) || null;
+        }
+        return data;
+      } catch (err) {
+        console.warn('[DatabaseAdapter] getUserByEmail exception from Supabase, falling back to local DB:', err);
+        const db = this.getLocalDB();
+        return db.users.find(u => u.email.toLowerCase() === email.toLowerCase()) || null;
       }
-      return data;
     }
   }
 
@@ -288,27 +302,38 @@ class DatabaseAdapter {
       last_active: new Date().toISOString().split('T')[0],
     };
 
-    if (this.isLocal) {
+    if (this.isLocal || !this.supabase) {
       const db = this.getLocalDB();
       db.users.push(newUser);
       this.saveLocalDB(db);
       return newUser;
     } else {
-      const { data, error } = await this.supabase!
-        .from('users')
-        .upsert([newUser], { onConflict: 'id' })
-        .select()
-        .single();
-      if (error) {
-        console.error('[DatabaseAdapter] createUser error from Supabase:', error);
-        throw new Error(error.message);
+      try {
+        const { data, error } = await this.supabase
+          .from('users')
+          .upsert([newUser], { onConflict: 'id' })
+          .select()
+          .single();
+        if (error) {
+          console.warn('[DatabaseAdapter] createUser error from Supabase, saving to local DB:', error.message);
+          const db = this.getLocalDB();
+          db.users.push(newUser);
+          this.saveLocalDB(db);
+          return newUser;
+        }
+        return data;
+      } catch (err) {
+        console.warn('[DatabaseAdapter] createUser exception from Supabase, saving to local DB:', err);
+        const db = this.getLocalDB();
+        db.users.push(newUser);
+        this.saveLocalDB(db);
+        return newUser;
       }
-      return data;
     }
   }
 
   async updateUser(id: string, updates: Partial<Omit<User, 'id' | 'email'>>): Promise<User> {
-    if (this.isLocal) {
+    if (this.isLocal || !this.supabase) {
       const db = this.getLocalDB();
       const idx = db.users.findIndex(u => u.id === id);
       if (idx === -1) throw new Error('User not found');
@@ -316,17 +341,35 @@ class DatabaseAdapter {
       this.saveLocalDB(db);
       return db.users[idx];
     } else {
-      const { data, error } = await this.supabase!
-        .from('users')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
-      if (error) {
-        console.error('[DatabaseAdapter] updateUser error from Supabase:', error);
-        throw new Error(error.message);
+      try {
+        const { data, error } = await this.supabase
+          .from('users')
+          .update(updates)
+          .eq('id', id)
+          .select()
+          .single();
+        if (error) {
+          console.warn('[DatabaseAdapter] updateUser error from Supabase, updating local DB:', error.message);
+          const db = this.getLocalDB();
+          const idx = db.users.findIndex(u => u.id === id);
+          if (idx !== -1) {
+            db.users[idx] = { ...db.users[idx], ...updates, settings: { ...db.users[idx].settings, ...updates.settings } };
+            this.saveLocalDB(db);
+            return db.users[idx];
+          }
+        }
+        return data;
+      } catch (err) {
+        console.warn('[DatabaseAdapter] updateUser exception from Supabase, updating local DB:', err);
+        const db = this.getLocalDB();
+        const idx = db.users.findIndex(u => u.id === id);
+        if (idx !== -1) {
+          db.users[idx] = { ...db.users[idx], ...updates, settings: { ...db.users[idx].settings, ...updates.settings } };
+          this.saveLocalDB(db);
+          return db.users[idx];
+        }
+        throw new Error('Failed to update user');
       }
-      return data;
     }
   }
 

@@ -24,7 +24,7 @@ app.use('/', apiRouter);
 // Fallback error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Unhandled server error:', err);
-  res.status(500).json({ error: 'Internal server error occurrence.' });
+  res.status(500).json({ error: err?.message || 'Internal server error occurrence.' });
 });
 
 // Start listening

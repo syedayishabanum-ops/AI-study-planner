@@ -7,52 +7,52 @@
   font-family: 'Inter', sans-serif;
   color-scheme: light dark;
   
-  /* Theme Variables - Default Dark Theme */
-  --bg-app: #030712;
-  --bg-card: rgba(17, 24, 39, 0.7);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --text-primary: #f3f4f6;
-  --text-secondary: #9ca3af;
+  /* Theme Variables - Modern Cosmic Dark Theme */
+  --bg-app: #0b0f19;
+  --bg-card: rgba(15, 23, 42, 0.75);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
   
   --color-primary: #6366f1;
   --color-primary-hover: #4f46e5;
-  --color-accent: #a855f7;
+  --color-accent: #8b5cf6;
   --color-success: #10b981;
   
   --indigo-tint: rgba(99, 102, 241, 0.15);
-  --indigo-border: rgba(99, 102, 241, 0.2);
+  --indigo-border: rgba(99, 102, 241, 0.25);
 }
 
 body.dark {
-  --bg-app: #030712;
-  --bg-card: rgba(17, 24, 39, 0.7);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --text-primary: #f3f4f6;
-  --text-secondary: #9ca3af;
+  --bg-app: #0b0f19;
+  --bg-card: rgba(15, 23, 42, 0.75);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
   
   --color-primary: #6366f1;
   --color-primary-hover: #4f46e5;
-  --color-accent: #a855f7;
+  --color-accent: #8b5cf6;
   --color-success: #10b981;
   
   --indigo-tint: rgba(99, 102, 241, 0.15);
-  --indigo-border: rgba(99, 102, 241, 0.2);
+  --indigo-border: rgba(99, 102, 241, 0.25);
 }
 
 body.light {
-  --bg-app: #F8FAFC;
-  --bg-card: #FFFFFF;
-  --border-color: #E5E7EB;
-  --text-primary: #1F2937;
-  --text-secondary: #6B7280;
+  --bg-app: #f1f5f9;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
   
-  --color-primary: #4F46E5;
+  --color-primary: #4f46e5;
   --color-primary-hover: #4338ca;
-  --color-accent: #06B6D4;
-  --color-success: #10B981;
+  --color-accent: #06b6d4;
+  --color-success: #10b981;
   
-  --indigo-tint: #EEF2FF;
-  --indigo-border: #C7D2FE;
+  --indigo-tint: #eef2ff;
+  --indigo-border: #c7d2fe;
 }
 
 @theme {
@@ -89,17 +89,49 @@ body {
 }
 
 body.dark {
-  background: radial-gradient(circle at 0% 0%, rgba(30, 27, 75, 0.4) 0%, transparent 40%),
-              radial-gradient(circle at 100% 100%, rgba(76, 29, 149, 0.4) 0%, transparent 40%),
-              #030712;
-  color: #f3f4f6;
+  background-color: #0b0f19;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.22) 0px, transparent 45%),
+    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.20) 0px, transparent 45%),
+    radial-gradient(at 50% 50%, rgba(59, 130, 246, 0.12) 0px, transparent 60%),
+    radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 45%),
+    radial-gradient(at 0% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 45%);
+  color: #f8fafc;
 }
 
 body.light {
-  background: radial-gradient(circle at 0% 0%, rgba(224, 231, 255, 0.3) 0%, transparent 45%),
-              radial-gradient(circle at 100% 100%, rgba(243, 232, 255, 0.3) 0%, transparent 45%),
-              #F8FAFC;
-  color: #1F2937;
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(199, 210, 254, 0.45) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(221, 214, 254, 0.45) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(224, 231, 255, 0.4) 0px, transparent 55%);
+  color: #0f172a;
+}
+
+.bg-mesh-dark {
+  background-color: #0b0f19;
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.25) 0%, transparent 40%),
+    radial-gradient(circle at 85% 25%, rgba(168, 85, 247, 0.22) 0%, transparent 40%),
+    radial-gradient(circle at 50% 70%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 90%, rgba(236, 72, 153, 0.15) 0%, transparent 40%);
+}
+
+.bg-mesh-light {
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(224, 231, 255, 0.7) 0%, transparent 40%),
+    radial-gradient(circle at 85% 25%, rgba(243, 232, 255, 0.7) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(224, 242, 254, 0.6) 0%, transparent 50%);
+}
+
+.bg-grid-dots {
+  background-size: 32px 32px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+}
+
+.light .bg-grid-dots {
+  background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px);
 }
 
 /* Custom Scrollbar */

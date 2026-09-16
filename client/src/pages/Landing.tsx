@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  Sparkles, Calendar, BookOpen, Clock, BarChart2, MessageSquare, 
+  Sparkles, Calendar, BookOpen, Clock, BarChart2, 
   Shield, ArrowRight, Sun, Moon, CheckCircle2, Zap, Brain, Target 
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';

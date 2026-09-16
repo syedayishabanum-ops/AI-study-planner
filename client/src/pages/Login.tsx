@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { 
   Sparkles, Mail, Lock, User, AlertCircle, Eye, EyeOff, 
-  ArrowLeft, ArrowRight, Sun, Moon, CheckCircle2, ShieldAlert, LogIn
+  ArrowLeft, Sun, Moon, CheckCircle2, LogIn
 } from 'lucide-react';
 
 export const Login: React.FC = () => {

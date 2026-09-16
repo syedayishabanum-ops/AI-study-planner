@@ -64,7 +64,7 @@ const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row relative">
+    <div className="min-h-screen flex flex-col md:flex-row relative bg-[#030712] text-white">
       {/* Background neon blobs */}
       <div className="absolute top-[10%] left-[10%] w-[30vw] h-[30vw] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[10%] right-[10%] w-[30vw] h-[30vw] rounded-full bg-purple-500/5 blur-[120px] pointer-events-none" />

@@ -40,7 +40,7 @@ export const Landing: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden font-sans">
+    <div className="min-h-screen relative overflow-hidden font-sans bg-[#030712] text-white">
       {/* Background ambient glowing circles */}
       <div className="absolute top-[10%] left-[5%] w-[35vw] h-[35vw] rounded-full bg-indigo-500/10 blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[5%] w-[40vw] h-[40vw] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none" />

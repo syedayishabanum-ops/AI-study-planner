@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Register API routes
 app.use('/api', apiRouter);
+app.use('/', apiRouter);
 
 // Fallback error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

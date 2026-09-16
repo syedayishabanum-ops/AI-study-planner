@@ -39,6 +39,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const parseJsonResponse = async (response: Response, defaultErrorMsg: string) => {
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      try {
+        return await response.json();
+      } catch {
+        throw new Error(defaultErrorMsg);
+      }
+    }
+    const text = await response.text();
+    if (text.includes('<!DOCTYPE') || text.includes('<html')) {
+      throw new Error(`The backend server at "${API_BASE}" could not be reached or returned HTML instead of API data. Please ensure your backend is deployed and VITE_API_URL is configured.`);
+    }
+    try {
+      return JSON.parse(text);
+    } catch {
+      throw new Error(defaultErrorMsg);
+    }
+  };
+
   // Authenticated API fetch helper
   const apiFetch = useCallback(async (endpoint: string, options: RequestInit = {}) => {
     const headers = new Headers(options.headers || {});
@@ -54,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       headers,
     });
 
-    const data = await response.json();
+    const data = await parseJsonResponse(response, 'Something went wrong.');
     if (!response.ok) {
       throw new Error(data.error || 'Something went wrong.');
     }
@@ -96,12 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify({ email, password }),
       });
       
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        throw new Error('Failed to parse login response from server.');
-      }
+      const data = await parseJsonResponse(response, 'Failed to parse login response from server.');
 
       if (!response.ok) throw new Error(data.error || 'Login failed.');
 
@@ -127,12 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify({ email, password, fullName }),
       });
       
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        throw new Error('Failed to parse signup response from server.');
-      }
+      const data = await parseJsonResponse(response, 'Failed to parse signup response from server.');
 
       if (!response.ok) throw new Error(data.error || 'Signup failed.');
 
@@ -162,12 +172,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify({ email, fullName, avatarUrl }),
       });
       
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        throw new Error('Failed to parse Google login response from server.');
-      }
+      const data = await parseJsonResponse(response, 'Failed to parse Google login response from server.');
 
       if (!response.ok) throw new Error(data.error || 'Google Login failed.');
 

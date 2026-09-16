@@ -27,10 +27,15 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // Start listening
-app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`  AI STUDY PLANNER BACKEND SERVER RUNNING           `);
-  console.log(`  PORT: ${PORT}                                     `);
-  console.log(`  ENVIRONMENT: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`====================================================`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(`  AI STUDY PLANNER BACKEND SERVER RUNNING           `);
+    console.log(`  PORT: ${PORT}                                     `);
+    console.log(`  ENVIRONMENT: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`====================================================`);
+  });
+}
+
+export default app;
+export { app };

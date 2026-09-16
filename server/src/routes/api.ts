@@ -54,9 +54,10 @@ router.post('/auth/signup', async (req, res) => {
     let explicitUserId: string | undefined = undefined;
 
     // Optional: Also register user in Supabase Auth if Supabase is active
-    if (!db.getIsLocal()) {
+    const supabaseClient = db.getSupabaseClient();
+    if (!db.getIsLocal() && supabaseClient) {
       try {
-        const { data: authData, error: authError } = await db.getSupabaseClient()!.auth.signUp({
+        const { data: authData, error: authError } = await supabaseClient.auth.signUp({
           email,
           password,
           options: {
@@ -138,14 +139,15 @@ router.post('/auth/login', async (req, res) => {
     }
 
     // 2. If not matched by password_hash or user was created in Supabase Auth directly, try Supabase Auth
-    if (!db.getIsLocal()) {
+    const supabaseClient = db.getSupabaseClient();
+    if (!db.getIsLocal() && supabaseClient) {
       try {
-        const { data: authData, error: authError } = await db.getSupabaseClient()!.auth.signInWithPassword({
+        const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (!authError && authData.user) {
+        if (!authError && authData?.user) {
           if (!user) {
             user = await db.getUser(authData.user.id);
           }
@@ -190,6 +192,8 @@ router.post('/auth/login', async (req, res) => {
 
           const token = generateToken(user.id);
           return res.json({ token, user });
+        } else if (authError) {
+          console.warn('[Auth] Supabase signInWithPassword returned error:', authError.message);
         }
       } catch (authErr) {
         console.warn('[Auth] Supabase auth.signInWithPassword notice:', authErr);
